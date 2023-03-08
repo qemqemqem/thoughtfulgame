@@ -61,7 +61,7 @@ NUM_TILES_X = int(MAP_WIDTH / TILE_SIZE) * 10
 NUM_TILES_Y = int(MAP_HEIGHT / TILE_SIZE) * 10
 
 # Define the sparse factor (lower values result in a more sparse map)
-SPARSE_FACTOR = 0.02
+SPARSE_FACTOR = 0.04
 
 # Define the map
 map_tiles = []
@@ -149,6 +149,7 @@ while running:
     things_on_screen = ", ".join(on_screen)
     if time_since_last_thought > 2000:
         # Start a new thread to run prompt_completion()
+        thought_prompt = "I see some things around me: " + things_on_screen + " and I think that..."
         prompt_thread = threading.Thread(target=call_prompt_completion)
         prompt_thread.start()
         # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
