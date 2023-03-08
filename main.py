@@ -4,6 +4,7 @@ import random
 import threading
 
 from gpt import prompt_completion
+from gpt_thoughts_prompter import generate_prompt_from_unknown_items
 
 # Initialize Pygame
 pygame.init()
@@ -146,16 +147,15 @@ while running:
     screen.blit(character_image, character_position)
 
     # Draw the text
-    things_on_screen = ", ".join(on_screen)
     if time_since_last_thought > 2000:
         # Start a new thread to run prompt_completion()
-        thought_prompt = "I see some things around me: " + things_on_screen + " and I think that..."
+        thought_prompt = generate_prompt_from_unknown_items(on_screen)
         prompt_thread = threading.Thread(target=call_prompt_completion)
         prompt_thread.start()
         # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
         time_since_last_thought = 0
     time_since_last_thought += 60
-    texts = ["Things that are nearby:", things_on_screen, thought]
+    texts = ["Things that are nearby:", ", ".join(on_screen), thought]
     y = WINDOW_HEIGHT + 20
     for line in texts:
         text = font.render(line, True, (255, 255, 255))
