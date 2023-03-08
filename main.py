@@ -57,11 +57,11 @@ MAP_WIDTH = 800
 MAP_HEIGHT = 800
 
 # Define the number of tiles in each direction
-NUM_TILES_X = int(MAP_WIDTH / TILE_SIZE)
-NUM_TILES_Y = int(MAP_HEIGHT / TILE_SIZE)
+NUM_TILES_X = int(MAP_WIDTH / TILE_SIZE) * 10
+NUM_TILES_Y = int(MAP_HEIGHT / TILE_SIZE) * 10
 
 # Define the sparse factor (lower values result in a more sparse map)
-SPARSE_FACTOR = 0.1
+SPARSE_FACTOR = 0.02
 
 # Define the map
 map_tiles = []
@@ -86,6 +86,7 @@ thought_prompt = ""
 prompt_completion_done = True
 time_since_last_thought = 10000  # milliseconds
 
+
 def call_prompt_completion():
     global thought
     global thought_prompt
@@ -96,6 +97,7 @@ def call_prompt_completion():
     prompt_completion_done = False
     thought = prompt_completion(thought_prompt)
     prompt_completion_done = True
+
 
 # Set up the game loop
 running = True
@@ -145,7 +147,7 @@ while running:
 
     # Draw the text
     things_on_screen = ", ".join(on_screen)
-    if time_since_last_thought > 5000:
+    if time_since_last_thought > 2000:
         # Start a new thread to run prompt_completion()
         prompt_thread = threading.Thread(target=call_prompt_completion)
         prompt_thread.start()
