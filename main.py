@@ -38,7 +38,7 @@ for image_file in os.listdir(IMAGE_DIR):
     if image_file != "character.png":
         terrain_image = pygame.image.load(os.path.join(IMAGE_DIR, image_file)).convert_alpha()
         terrain_image = pygame.transform.scale(terrain_image, (TILE_SIZE, TILE_SIZE))
-        terrain_images[image_file[:-4]] = terrain_image
+        terrain_images[image_file[:-4].replace("-", " ")] = terrain_image
 
 # Define the number of tiles in each direction
 NUM_TILES_X = int(WINDOW_WIDTH / TILE_SIZE)
