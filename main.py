@@ -1,14 +1,19 @@
 import pygame
 import os
 import random
+from gpt import prompt_completion
 
 # Initialize Pygame
 pygame.init()
 
 # Set the dimensions of the window
 WINDOW_WIDTH = 800
-TEXT_SPACE = 200
+FONT_SIZE = 32
+TEXT_SPACE = FONT_SIZE * 8
 WINDOW_HEIGHT = 600
+
+# Define the size of each tile
+TILE_SIZE = 64
 
 # Create the window
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + TEXT_SPACE))
@@ -20,13 +25,10 @@ pygame.display.set_caption("RPG Map")
 clock = pygame.time.Clock()
 
 # Set up the font
-font = pygame.font.Font(None, 32)
+font = pygame.font.Font(None, FONT_SIZE)
 
 # Define the directory where the images are stored
 IMAGE_DIR = "images/"
-
-# Define the size of each tile
-TILE_SIZE = 64
 
 # Load the character image
 character_image = pygame.image.load(os.path.join(IMAGE_DIR, "character.png")).convert_alpha()
@@ -75,6 +77,10 @@ for x in range(NUM_TILES_X):
 VIEW_WIDTH = int(WINDOW_WIDTH / TILE_SIZE)
 VIEW_HEIGHT = int(WINDOW_HEIGHT / TILE_SIZE)
 
+# The thought only updates sometimes
+thought = "Hello"
+time_since_last_thought = 10000 # milliseconds
+
 # Set up the game loop
 running = True
 while running:
@@ -122,13 +128,18 @@ while running:
     screen.blit(character_image, character_position)
 
     # Draw the text
-    texts = ["Things that are nearby:", ", ".join(on_screen), "", "Press Q to quit, arrow keys to move"]
+    things_on_screen = ", ".join(on_screen)
+    if time_since_last_thought > 1000:
+        thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
+        time_since_last_thought = 0
+    time_since_last_thought += 60
+    texts = ["Things that are nearby:", things_on_screen, thought]
     y = WINDOW_HEIGHT + 20
     for line in texts:
         text = font.render(line, True, (255, 255, 255))
         text_rect = text.get_rect(topleft=(20, y))
         screen.blit(text, text_rect)
-        y += 32
+        y += FONT_SIZE
 
     # Update the screen
     pygame.display.flip()
