@@ -1,6 +1,8 @@
 import pygame
 import os
 import random
+import threading
+
 from gpt import prompt_completion
 
 # Initialize Pygame
@@ -78,8 +80,22 @@ VIEW_WIDTH = int(WINDOW_WIDTH / TILE_SIZE)
 VIEW_HEIGHT = int(WINDOW_HEIGHT / TILE_SIZE)
 
 # The thought only updates sometimes
+# These need to be global for the thread to access it
 thought = "Hello"
-time_since_last_thought = 10000 # milliseconds
+thought_prompt = ""
+prompt_completion_done = True
+time_since_last_thought = 10000  # milliseconds
+
+def call_prompt_completion():
+    global thought
+    global thought_prompt
+    global prompt_completion_done
+    if not prompt_completion_done:
+        print("I can't think right now! I'm already thinking!")
+        return
+    prompt_completion_done = False
+    thought = prompt_completion(thought_prompt)
+    prompt_completion_done = True
 
 # Set up the game loop
 running = True
@@ -129,8 +145,11 @@ while running:
 
     # Draw the text
     things_on_screen = ", ".join(on_screen)
-    if time_since_last_thought > 1000:
-        thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
+    if time_since_last_thought > 5000:
+        # Start a new thread to run prompt_completion()
+        prompt_thread = threading.Thread(target=call_prompt_completion)
+        prompt_thread.start()
+        # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
         time_since_last_thought = 0
     time_since_last_thought += 60
     texts = ["Things that are nearby:", things_on_screen, thought]

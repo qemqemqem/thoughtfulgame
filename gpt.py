@@ -1,4 +1,5 @@
 import os
+import time
 
 import openai
 
@@ -8,9 +9,10 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 # Do GPT completion
 def prompt_completion(question):
+    start_time = time.perf_counter()
     prompt = f"{question} "
     response = openai.Completion.create(
-        engine="davinci",
+        engine="curie", # "curie" is cheaper, "davinci" is good, there's also an option to get chatgpt on the website
         prompt=prompt,
         max_tokens=64,
         n=1,
@@ -18,7 +20,9 @@ def prompt_completion(question):
         temperature=0.5,
     )
     answer = response.choices[0].text.strip()
-    print(f"\tPROMPT: {question}\n\tANSWER: {answer}\n")
+    # print(f"\tPROMPT: {question}\n\tANSWER: {answer}\n")
+    duration = time.perf_counter() - start_time
+    print("Duration: {:.2f} seconds".format(duration))
     return answer
 
 
