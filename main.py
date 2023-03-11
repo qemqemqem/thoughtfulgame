@@ -7,6 +7,7 @@ from gpt import prompt_completion
 from gpt_thoughts_prompter import generate_prompt_from_unknown_items
 from thing_class import Thing
 from thought_manager import ThoughtManager
+from file_cache_manager import StringCache, DEFAULT_CACHE_FILE_NAME
 
 # Initialize Pygame
 pygame.init()
@@ -70,6 +71,9 @@ NUM_TILES_Y = int(MAP_HEIGHT / TILE_SIZE) * 10
 # Define the sparse factor (lower values result in a more sparse map)
 SPARSE_FACTOR = 0.04
 
+# Load the cache
+cache = StringCache(DEFAULT_CACHE_FILE_NAME)
+
 # Define the map
 map_tiles = []
 for x in range(NUM_TILES_X):
@@ -77,7 +81,7 @@ for x in range(NUM_TILES_X):
     for y in range(NUM_TILES_Y):
         if random.random() < SPARSE_FACTOR:
             terrain_tile_name = random.choice(list(terrain_images.keys()))
-            terrain_tile = Thing(terrain_tile_name)
+            terrain_tile = Thing(terrain_tile_name, cache)
         else:
             terrain_tile = None
         row.append(terrain_tile)
