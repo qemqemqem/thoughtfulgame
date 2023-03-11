@@ -56,7 +56,8 @@ def generate_descriptions(strings, cache_file):
     cache.save_cache()
 
 if __name__ == "__main__":
-    strings = [image_file for image_file in os.listdir("images/")]
+    # TODO(cleanup): This file name cleaning is duplicated in main.py
+    strings = [image_file[:-4].replace("-", " ") for image_file in os.listdir("images/")]
 
     # Generate descriptions for each string and print the result
     generate_descriptions(strings, DEFAULT_CACHE_FILE_NAME)

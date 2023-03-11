@@ -17,7 +17,7 @@ def prompt_completion(question):
         prompt=prompt,
         max_tokens=64,
         n=1,
-        stop=[".", "DONE"],  # ["\n", " Q:"],
+        stop=[".", "DONE", "\n\n"],  # ["\n", " Q:"],
         temperature=0.5,
     )
     answer = response.choices[0].text.strip()
