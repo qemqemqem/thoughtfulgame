@@ -8,14 +8,15 @@ from gpt_thoughts_prompter import generate_prompt_from_unknown_items
 from thing_class import Thing
 from thought_manager import ThoughtManager
 from file_cache_manager import StringCache, DEFAULT_CACHE_FILE_NAME
-
+from action_log_manager import ActionLogManager
+from vec2i import Vec2i
 # Initialize Pygame
 pygame.init()
 
 # Set the dimensions of the window
 WINDOW_WIDTH = 800
 FONT_SIZE = 32
-TEXT_SPACE = FONT_SIZE * 8
+TEXT_SPACE = FONT_SIZE * 12
 WINDOW_HEIGHT = 600
 
 # Define the size of each tile
@@ -40,6 +41,9 @@ IMAGE_DIR = "images/"
 GENERATE_THOUGHT_EVERY = 4000
 thought_man = ThoughtManager()
 
+# Create the action log
+action_logger = ActionLogManager()
+
 # Load the character image
 character_image = pygame.image.load(os.path.join(IMAGE_DIR, "character.png")).convert_alpha()
 character_image = pygame.transform.scale(character_image, (TILE_SIZE, TILE_SIZE))
@@ -57,8 +61,12 @@ NUM_TILES_X = int(WINDOW_WIDTH / TILE_SIZE)
 NUM_TILES_Y = int(WINDOW_HEIGHT / TILE_SIZE)
 
 # Define the character's position
-character_x = int(NUM_TILES_X / 2)
-character_y = int(NUM_TILES_Y / 2)
+character_pos = Vec2i(int(NUM_TILES_X / 2), int(NUM_TILES_Y / 2))
+UP = Vec2i(0, 1)
+RIGHT = Vec2i(1, 0)
+DOWN = Vec2i(0, -1)
+LEFT = Vec2i(-1, 0)
+character_orientation = UP
 
 # Define the size of the map
 MAP_WIDTH = 800
@@ -93,7 +101,7 @@ VIEW_HEIGHT = int(WINDOW_HEIGHT / TILE_SIZE)
 
 # The thought only updates sometimes
 # These need to be global for the thread to access it
-thought = "Hello"
+thought = "STARTING..."
 thought_prompt = ""
 prompt_completion_done = True
 time_since_last_thought = 10000  # milliseconds
@@ -108,6 +116,7 @@ def call_prompt_completion():
         return
     prompt_completion_done = False
     thought = prompt_completion(thought_prompt)
+    thought_man.think_thought(thought)
     prompt_completion_done = True
 
 
@@ -116,23 +125,33 @@ running = True
 while running:
     # Handle events
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
+            action_logger.log_action("Quitting")
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                character_y -= 1
+                character_pos = character_pos.add(DOWN)
+                character_orientation = DOWN
+                action_logger.log_action("Character Moves North")
             elif event.key == pygame.K_DOWN:
-                character_y += 1
+                action_logger.log_action("Character Moves South")
+                character_orientation = UP
+                character_pos = character_pos.add(UP)
             elif event.key == pygame.K_LEFT:
-                character_x -= 1
+                action_logger.log_action("Character Moves West")
+                character_orientation = LEFT
+                character_pos = character_pos.add(LEFT)
             elif event.key == pygame.K_RIGHT:
-                character_x += 1
-            elif event.key == pygame.K_q:
-                running = False
+                action_logger.log_action("Character Moves East")
+                character_orientation = RIGHT
+                character_pos = character_pos.add(RIGHT)
+            elif event.key == pygame.K_e:
+                #map_tiles[character_x][character_y]
+                action_logger.log_action("Character Attacks "+character_orientation)
 
     # Calculate the position of the top-left tile of the view
-    view_x = max(0, character_x - int(VIEW_WIDTH / 2))
-    view_y = max(0, character_y - int(VIEW_HEIGHT / 2))
+    view_x = max(0, character_pos.x - int(VIEW_WIDTH / 2))
+    view_y = max(0, character_pos.y - int(VIEW_HEIGHT / 2))
 
     # Calculate the position of the bottom-right tile of the view
     view_x2 = min(NUM_TILES_X, view_x + VIEW_WIDTH)
@@ -154,7 +173,7 @@ while running:
                 screen.blit(tile_image, ((x - view_x) * TILE_SIZE, (y - view_y) * TILE_SIZE))
 
     # Draw the character
-    character_position = ((character_x - view_x) * TILE_SIZE, (character_y - view_y) * TILE_SIZE)
+    character_position = ((character_pos.x - view_x) * TILE_SIZE, (character_pos.y - view_y) * TILE_SIZE)
     screen.blit(character_image, character_position)
 
     # Draw the text
@@ -166,7 +185,7 @@ while running:
         # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
         time_since_last_thought = 0
     time_since_last_thought += 60
-    texts = ["Things that are nearby:", ", ".join([th.name for th in on_screen]), "", thought]
+    texts = ["Things that are nearby:", ", ".join([th.name for th in on_screen]), "", "THOUGHT: " + thought + "\n\n"] + thought_man.get_thought_history(5)
     y = WINDOW_HEIGHT + 20
     for line in texts:
         text = font.render(line, True, (255, 255, 255))
