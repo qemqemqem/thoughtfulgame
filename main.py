@@ -5,6 +5,7 @@ import threading
 
 from gpt import prompt_completion
 from gpt_thoughts_prompter import generate_prompt_from_unknown_items
+from thing_class import Thing
 from thought_manager import ThoughtManager
 
 # Initialize Pygame
@@ -75,7 +76,8 @@ for x in range(NUM_TILES_X):
     row = []
     for y in range(NUM_TILES_Y):
         if random.random() < SPARSE_FACTOR:
-            terrain_tile = random.choice(list(terrain_images.keys()))
+            terrain_tile_name = random.choice(list(terrain_images.keys()))
+            terrain_tile = Thing(terrain_tile_name)
         else:
             terrain_tile = None
         row.append(terrain_tile)
@@ -141,9 +143,9 @@ while running:
     # Draw the map
     for x in range(view_x, view_x2):
         for y in range(view_y, view_y2):
-            image_name = map_tiles[x][y]
-            if image_name is not None:
-                tile_image = terrain_images[image_name]
+            thing = map_tiles[x][y]
+            if thing is not None:
+                tile_image = terrain_images[thing.name]
                 on_screen.append(map_tiles[x][y])
                 screen.blit(tile_image, ((x - view_x) * TILE_SIZE, (y - view_y) * TILE_SIZE))
 
@@ -160,7 +162,7 @@ while running:
         # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
         time_since_last_thought = 0
     time_since_last_thought += 60
-    texts = ["Things that are nearby:", ", ".join(on_screen), "", thought]
+    texts = ["Things that are nearby:", ", ".join([th.name for th in on_screen]), "", thought]
     y = WINDOW_HEIGHT + 20
     for line in texts:
         text = font.render(line, True, (255, 255, 255))

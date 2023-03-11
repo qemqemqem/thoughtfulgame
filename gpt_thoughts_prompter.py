@@ -1,6 +1,7 @@
+import thing_class
 
 
-def generate_prompt_from_unknown_items(unknown_items):
+def generate_prompt_from_unknown_items(unknown_items: list[thing_class.Thing]):
     examples = {"cat, dog, bird": "I would like to pet that cat",
                 "dragon, sword, shield": "I would like to attack that dragon with my sword",
                 "wizard, gate, cat": "I should ask that wizard about the gate",
@@ -16,5 +17,5 @@ def generate_prompt_from_unknown_items(unknown_items):
     for example in examples:
         demonstration_with_examples += present_things + example + thought_prompt + examples[example] + thought_terminator
 
-    full_prompt = demonstration_with_examples + present_things + ", ".join(unknown_items) + thought_prompt
+    full_prompt = demonstration_with_examples + present_things + ", ".join([th.name for th in unknown_items]) + thought_prompt
     return full_prompt
