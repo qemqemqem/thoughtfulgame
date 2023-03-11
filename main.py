@@ -5,6 +5,7 @@ import threading
 
 from gpt import prompt_completion
 from gpt_thoughts_prompter import generate_prompt_from_unknown_items
+from thought_manager import ThoughtManager
 
 # Initialize Pygame
 pygame.init()
@@ -32,6 +33,10 @@ font = pygame.font.Font(None, FONT_SIZE)
 
 # Define the directory where the images are stored
 IMAGE_DIR = "images/"
+
+# Thinking Parameters
+GENERATE_THOUGHT_EVERY = 4000
+thought_man = ThoughtManager()
 
 # Load the character image
 character_image = pygame.image.load(os.path.join(IMAGE_DIR, "character.png")).convert_alpha()
@@ -147,7 +152,7 @@ while running:
     screen.blit(character_image, character_position)
 
     # Draw the text
-    if time_since_last_thought > 2000:
+    if time_since_last_thought > GENERATE_THOUGHT_EVERY:
         # Start a new thread to run prompt_completion()
         thought_prompt = generate_prompt_from_unknown_items(on_screen)
         prompt_thread = threading.Thread(target=call_prompt_completion)
@@ -155,7 +160,7 @@ while running:
         # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")
         time_since_last_thought = 0
     time_since_last_thought += 60
-    texts = ["Things that are nearby:", ", ".join(on_screen), thought]
+    texts = ["Things that are nearby:", ", ".join(on_screen), "", thought]
     y = WINDOW_HEIGHT + 20
     for line in texts:
         text = font.render(line, True, (255, 255, 255))
