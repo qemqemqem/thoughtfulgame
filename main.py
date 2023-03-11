@@ -146,6 +146,7 @@ while running:
                 character_orientation = RIGHT
                 character_pos = character_pos.add(RIGHT)
             elif event.key == pygame.K_e:
+                #TODO wrap the map tiles in an object or create a method to prevent out of bounds
                 #map_tiles[character_x][character_y]
                 action_logger.log_action("Character Attacks "+character_orientation)
 
@@ -179,7 +180,7 @@ while running:
     # Draw the text
     if time_since_last_thought > GENERATE_THOUGHT_EVERY:
         # Start a new thread to run prompt_completion()
-        thought_prompt = generate_prompt_from_unknown_items(on_screen)
+        thought_prompt = generate_prompt_from_unknown_items(on_screen, action_log=action_logger.get_action_history(5), thoughts_log=list(reversed(thought_man.get_thought_history(5))))
         prompt_thread = threading.Thread(target=call_prompt_completion)
         prompt_thread.start()
         # thought = prompt_completion("I see some things around me: " + things_on_screen + " and I think that...")

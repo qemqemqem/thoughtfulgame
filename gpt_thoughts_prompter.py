@@ -1,7 +1,17 @@
 import thing_class
 
 
-def generate_prompt_from_unknown_items(unknown_items: list[thing_class.Thing]):
+def generate_prompt_from_unknown_items(unknown_items: list[thing_class.Thing], action_log:list=None, thoughts_log:list=None):
+    action_history = ""
+    if action_log is not None:
+        action_history = "I have done: " + ", ".join(action_log) + "\n\n"
+
+    thought_history = ""
+    if thoughts_log is not None:
+        thought_history = "I have thought: " + ", ".join(thoughts_log) + "\n\n"
+    if len(thought_history) < 50:
+        thought_history = ""  # Don't bother with the thought history if it's too short
+
     descriptions = {}
     for item in unknown_items:
         descriptions[item.name] = item.description
@@ -23,7 +33,7 @@ def generate_prompt_from_unknown_items(unknown_items: list[thing_class.Thing]):
     for example in examples:
         demonstration_with_examples += present_things + example + thought_prompt + examples[example] + thought_terminator
 
-    full_prompt = demonstration_with_examples + present_things + ", ".join([th.name for th in unknown_items]) + thought_prompt
+    full_prompt = action_history + thought_history + demonstration_with_examples + present_things + ", ".join([th.name for th in unknown_items]) + thought_prompt
     return full_prompt
 
 # The target is something like this:
