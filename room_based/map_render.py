@@ -5,7 +5,8 @@ import pygame
 class TileMapRenderer:
     TILE_SIZE = 32
 
-    def __init__(self, tile_map, characters=None):
+    def __init__(self, tile_map, characters=None, tile_size=32):
+        self.TILE_SIZE = tile_size
         self.tile_map = tile_map
         self.characters = characters if characters is not None else []
         self.width = len(tile_map[0])
@@ -33,26 +34,3 @@ class TileMapRenderer:
             image = self.images[character.type]
             rect = pygame.Rect(character.x * self.TILE_SIZE, character.y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
             screen.blit(image, rect)
-
-if __name__ == "__main__":
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Tile Map Renderer")
-
-    from room_gen import *
-    map_generator = TileMapGenerator(width=30, height=20, seed=random.randint(0, 1000000))
-    tile_map = map_generator.generate_map(water_level=0.4, tree_density=0.2, wall_density=0.05, rock_density=0.1)
-    characters = map_generator.generate_characters(num_characters=5, character_types=("elf", "goblin", "human"))
-    renderer = TileMapRenderer(tile_map, characters)
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        screen.fill((0, 0, 0))
-        renderer.render_map(screen)
-        pygame.display.flip()
-
-    pygame.quit()

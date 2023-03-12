@@ -3,9 +3,13 @@ from noise import snoise2  # You need to install the noise module
 
 
 class Room:
-    def __init__(self, tile_map, characters):
+    def __init__(self, tile_map, characters, width, height):
         self.tile_map = tile_map
         self.characters = characters
+        self.width = width
+        self.height = height
+
+
 class TileMapGenerator:
     def __init__(self, width, height, seed=None):
         self.width = width
@@ -65,12 +69,14 @@ class Character:
         self.type = character_type
         self.x = x
         self.y = y
+        self.vx = 0  # velocity in the x direction
+        self.vy = 0  # velocity in the y direction
 
 if __name__ == "__main__":
     map_generator = TileMapGenerator(width=30, height=20, seed=1234)
-    tile_map = map_generator.generate_map(water_level=0.4, tree_density=0.2, wall_density=0.05, rock_density=0.1)
+    tile_map = map_generator.generate_map(water_level=0.4, tree_density=0.05, wall_density=0.1, rock_density=0.03)
     characters = map_generator.generate_characters(num_characters=5, character_types=("elf", "goblin", "human"))
-    room = Room(tile_map, characters)
+    room = Room(tile_map, characters, map_generator.width, map_generator.height)
 
     # Print the map to the console
     for row in tile_map:
