@@ -47,6 +47,23 @@ class Room:
         self.west_exit = west_exit
 
 
+class PlayerData:
+    def __init__(self, room_pos:Vec2i=None, character=None):
+        if room_pos is None:
+            room_pos = Vec2i(0, 0)
+        self.room_pos = room_pos
+        self.character = character
+
+
 class MapData:
-    def __init__(self):
+    def __init__(self, default_room_width=16, default_room_height=10):
+        self.default_room_width = default_room_width
+        self.default_room_height = default_room_height
         self.rooms: dict[Vec2i, Room] = {}
+
+    def get_room(self, room_pos:Vec2i):
+        initialized = True
+        if room_pos not in self.rooms:
+            self.rooms[room_pos] = Room(self.default_room_width, self.default_room_height)
+            initialized = False
+        return self.rooms[room_pos], initialized
