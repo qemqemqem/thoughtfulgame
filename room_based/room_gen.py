@@ -1,6 +1,8 @@
 import random
 from noise import snoise2  # You need to install the noise module
 
+from room_based.location_utils import *
+
 
 class Room:
     def __init__(self, tile_map, characters, width, height):
@@ -50,14 +52,20 @@ class TileMapGenerator:
 
         return tile_map
 
-    def generate_characters(self, num_characters=5, character_types=("elf", "goblin", "human")):
+    def generate_characters(self, tile_map, num_characters=5, character_types=("elf", "goblin", "human")):
         characters = []
         for _ in range(num_characters):
             character_type = random.choice(character_types)
             x = random.uniform(0, self.width)
             y = random.uniform(0, self.height)
-            character = Character(character_type, x, y)
-            characters.append(character)
+            while True:
+                x = random.uniform(0, self.width)
+                y = random.uniform(0, self.height)
+                nearby_tiles = get_nearby_tiles(tile_map, x, y, epsilon=1.0)
+                if all(not is_collision(tile.type) for tile in nearby_tiles):
+                    character = Character(character_type, x, y)
+                    characters.append(character)
+                    break
         return characters
 
 class Tile:
@@ -71,13 +79,3 @@ class Character:
         self.y = y
         self.vx = 0  # velocity in the x direction
         self.vy = 0  # velocity in the y direction
-
-if __name__ == "__main__":
-    map_generator = TileMapGenerator(width=30, height=20, seed=1234)
-    tile_map = map_generator.generate_map(water_level=0.4, tree_density=0.05, wall_density=0.1, rock_density=0.03)
-    characters = map_generator.generate_characters(num_characters=5, character_types=("elf", "goblin", "human"))
-    room = Room(tile_map, characters, map_generator.width, map_generator.height)
-
-    # Print the map to the console
-    for row in tile_map:
-        print("".join([tile.type[0] for tile in row]))
