@@ -17,3 +17,11 @@ class Vec2i:
     def __str__(self):
         return f"({self.x}, {self.y})"
 
+    # Define adder
+    def __add__(self, other: Vec2i):
+        return self.add(other)
+
+    # Define subtractor
+    def __sub__(self, other: Vec2i):
+        return self.sub(other)
+

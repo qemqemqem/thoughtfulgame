@@ -2,18 +2,21 @@ import random
 
 import pygame
 
-from location_utils import move_character
+from location_utils import move_character, is_character_in_doorway
+
 
 class Game:
     PLAYER_SPEED = 0.5
     NPC_SPEED = 0.2
 
-    def __init__(self, room, tile_map, characters):
-        self.room = room
-        self.tile_map = tile_map
-        self.player = characters[0]
-        self.npcs = characters[1:]
-        self.all_characters = characters
+    def __init__(self, map_data, current_room, initialize_new_room_func):
+        self.map_data = map_data
+        self.room = current_room
+        self.tile_map = self.room.tile_map
+        self.player = self.room.characters[0]
+        self.npcs = self.room.characters[1:]
+        self.all_characters = self.room.characters
+        self.initialize_new_room_func = initialize_new_room_func
 
     def handle_input(self):
         keys = pygame.key.get_pressed()
@@ -62,3 +65,12 @@ class Game:
 
             # Prevent the NPC from moving off the screen
             self.bound_character_to_room(npc)
+
+    def check_player_door(self):
+        room_change, direction = is_character_in_doorway(self.player, self.room)
+        if not room_change:
+            return
+        new_room, initialized = self.map_data.get_room(self.room.room_pos + direction)
+        if not initialized:
+            self.initialize_new_room_func(new_room)
+        self.room = new_room

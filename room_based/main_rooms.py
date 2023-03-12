@@ -20,15 +20,21 @@ pygame.display.set_caption("Tile Map Renderer")
 # Generation
 player = PlayerData()
 map_data = MapData(width, height)
+
+def initialize_new_room(room):
+    room.set_exits(random.randint(1, width - 1), random.randint(1, height - 1), random.randint(1, width - 1),
+                   random.randint(1, height - 1))
+    map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
+    room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
+    map_generator.wall_in_map(room.tile_map, WALL, room)
+    room.characters = map_generator.generate_characters(room.tile_map, num_characters=5,
+                                                        character_types=("elf", "goblin", "human"))
+
 room, _ = map_data.get_room(player.room_pos)
-room.set_exits(random.randint(1,width-1), random.randint(1,height-1), random.randint(1,width-1), random.randint(1,height-1))
-map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
-tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
-map_generator.wall_in_map(tile_map, WALL, room)
-characters = map_generator.generate_characters(tile_map, num_characters=5, character_types=("elf", "goblin", "human"))
-player.character = characters[0]  # The first character is the player character
-renderer = TileMapRenderer(tile_map, characters, tile_size=tile_size)
-game = Game(room, tile_map, characters)
+initialize_new_room(room)
+player.character = room.characters[0]  # The first character is the player character
+renderer = TileMapRenderer(tile_size=tile_size)
+game = Game(map_data, room, initialize_new_room)
 
 # Main game loop
 running = True
@@ -42,13 +48,12 @@ while running:
     # Update the game state
     game.handle_input()
     game.update()
+    game.check_player_door()
 
     # Render the tile map and characters
     screen.fill((0, 0, 0))
-    renderer.render_map(screen)
+    renderer.render_map(screen, game.room)
     pygame.display.flip()
-
-    print(f"North door? {is_character_in_doorway(player.character, room)}")
 
     # Cap the frame rate
     clock.tick(60)
