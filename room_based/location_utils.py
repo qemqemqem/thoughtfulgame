@@ -11,9 +11,6 @@ def get_nearby_tiles(tile_map, x, y, radius:int=2, epsilon=0.5):
                     nearby_tiles.append(tile_map[tile_y][tile_x])
     return nearby_tiles
 
-def is_collision(tile_type):
-    """Determine if a character cannot walk on a given tile type."""
-    return tile_type in ["wall", "water"]#, "tree", "rock"]
 
 def move_character(character, dx, dy, tile_map, all_characters, epsilon=1.0):
     """Move a character by a given amount and prevent it from colliding with walls or water."""
@@ -22,7 +19,7 @@ def move_character(character, dx, dy, tile_map, all_characters, epsilon=1.0):
 
     nearby_tiles = get_nearby_tiles(tile_map, new_x, new_y, 2, epsilon)
     for tile in nearby_tiles:
-        if is_collision(tile.type):
+        if tile.type.blocks_movement:
             return  # Character cannot move here, return without updating position
 
     for other_character in all_characters:

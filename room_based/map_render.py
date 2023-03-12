@@ -26,7 +26,7 @@ class TileMapRenderer:
         for y in range(self.height):
             for x in range(self.width):
                 tile_type = self.tile_map[y][x].type
-                image = self.images[tile_type]
+                image = self.images[tile_type.name]
                 rect = pygame.Rect(x * self.TILE_SIZE, y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
                 screen.blit(image, rect)
 

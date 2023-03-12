@@ -77,7 +77,8 @@ if __name__ == "__main__":
     pygame.display.set_caption("Tile Map Renderer")
 
     map_generator = TileMapGenerator(width, height, seed=random.randint(0, 1000000))
-    tile_map = map_generator.generate_map(water_level=0.3, tree_density=0.05, wall_density=0.1, rock_density=0.03)
+    tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
+    map_generator.wall_in_map(tile_map, 2, random.randint(1,width-1), random.randint(1,height-1), random.randint(1,width-1), random.randint(1,height-1))
     characters = map_generator.generate_characters(tile_map, num_characters=5, character_types=("elf", "goblin", "human"))
     room = Room(tile_map, characters, map_generator.width, map_generator.height)
     renderer = TileMapRenderer(tile_map, characters, tile_size=tile_size)
