@@ -2,38 +2,14 @@ import random
 from noise import snoise2  # You need to install the noise module
 
 from room_based.location_utils import *
-
-
-class Room:
-    def __init__(self, tile_map, characters, width, height):
-        self.tile_map = tile_map
-        self.characters = characters
-        self.width = width
-        self.height = height
-
-
-class TileType:
-    def __init__(self, name, blocks_movement):
-        self.name = name
-        self.blocks_movement = blocks_movement
-
-
-GRASS = TileType("grass", False)
-WATER = TileType("water", True)
-TREE = TileType("tree", False)
-WALL = TileType("wall", True)
-ROCK = TileType("rock", False)
-
-
-class Tile:
-    def __init__(self, tile_type):
-        self.type = tile_type
+from map_data import *
 
 
 class TileMapGenerator:
-    def __init__(self, width, height, seed=None):
-        self.width = width
-        self.height = height
+    def __init__(self, room, seed=None):
+        self.room = room
+        self.width = room.width
+        self.height = room.height
         self.seed = seed if seed is not None else random.randint(0, 65535)
 
     def generate_map(self, water_level=0.4, tree_density=0.2, wall_density=0.05, rock_density=0.1):
@@ -103,11 +79,3 @@ class TileMapGenerator:
                     characters.append(character)
                     break
         return characters
-
-class Character:
-    def __init__(self, character_type, x, y):
-        self.type = character_type
-        self.x = x
-        self.y = y
-        self.vx = 0  # velocity in the x direction
-        self.vy = 0  # velocity in the y direction

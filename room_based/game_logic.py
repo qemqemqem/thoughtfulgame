@@ -64,7 +64,8 @@ class Game:
             self.bound_character_to_room(npc)
 
 if __name__ == "__main__":
-    from room_gen import TileMapGenerator, Room
+    from map_gen import TileMapGenerator
+    from map_data import Room, MapData
     from map_render import TileMapRenderer
 
     width = 30
@@ -76,11 +77,12 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((width * tile_size, height * tile_size))
     pygame.display.set_caption("Tile Map Renderer")
 
-    map_generator = TileMapGenerator(width, height, seed=random.randint(0, 1000000))
+    room = Room(width, height)
+    room.set_exits(random.randint(1,width-1), random.randint(1,height-1), random.randint(1,width-1), random.randint(1,height-1))
+    map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
-    map_generator.wall_in_map(tile_map, 2, random.randint(1,width-1), random.randint(1,height-1), random.randint(1,width-1), random.randint(1,height-1))
+    map_generator.wall_in_map(tile_map, 2, room.north_exit, room.east_exit, room.south_exit, room.west_exit)
     characters = map_generator.generate_characters(tile_map, num_characters=5, character_types=("elf", "goblin", "human"))
-    room = Room(tile_map, characters, map_generator.width, map_generator.height)
     renderer = TileMapRenderer(tile_map, characters, tile_size=tile_size)
     game = Game(room, tile_map, characters)
 
