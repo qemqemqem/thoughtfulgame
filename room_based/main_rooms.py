@@ -5,6 +5,7 @@ from map_gen import TileMapGenerator
 from map_data import *
 from map_render import TileMapRenderer
 from game_logic import Game
+from location_utils import is_character_in_doorway
 
 # Room dimensions, needed to initialize pygame
 width = 30
@@ -25,6 +26,7 @@ map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
 tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
 map_generator.wall_in_map(tile_map, WALL, room)
 characters = map_generator.generate_characters(tile_map, num_characters=5, character_types=("elf", "goblin", "human"))
+player.character = characters[0]  # The first character is the player character
 renderer = TileMapRenderer(tile_map, characters, tile_size=tile_size)
 game = Game(room, tile_map, characters)
 
@@ -45,6 +47,8 @@ while running:
     screen.fill((0, 0, 0))
     renderer.render_map(screen)
     pygame.display.flip()
+
+    print(f"North door? {is_character_in_doorway(player.character, room)}")
 
     # Cap the frame rate
     clock.tick(60)

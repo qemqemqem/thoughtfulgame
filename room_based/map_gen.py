@@ -87,4 +87,5 @@ class TileMapGenerator:
                     character = Character(character_type, x, y)
                     characters.append(character)
                     break
+        characters[0].player_character = True
         return characters

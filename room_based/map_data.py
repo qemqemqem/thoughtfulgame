@@ -27,6 +27,7 @@ class Character:
         self.y = y
         self.vx = 0  # velocity in the x direction
         self.vy = 0  # velocity in the y direction
+        self.player_character = False
 
 
 class Room:

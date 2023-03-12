@@ -31,8 +31,9 @@ class Game:
         elif keys[pygame.K_DOWN]:
             dy = 1
 
-        # Update the player's velocity based on the input
-        move_character(self.player, dx * self.PLAYER_SPEED, dy * self.PLAYER_SPEED, self.tile_map, self.all_characters, epsilon = 1.0)
+        self.player.vx = dx
+        self.player.vy = dy
+
 
     def bound_character_to_room(self, character):
         character.x = max(0, min(character.x, self.room.width - 1))
@@ -40,8 +41,7 @@ class Game:
 
     def update(self):
         # Update the player's position based on its velocity
-        self.player.x += self.player.vx
-        self.player.y += self.player.vy
+        move_character(self.player, self.player.vx * self.PLAYER_SPEED, self.player.vy * self.PLAYER_SPEED, self.tile_map, self.all_characters, epsilon = 1.0)
 
         # Prevent the player from moving off the screen
         self.bound_character_to_room(self.player)
