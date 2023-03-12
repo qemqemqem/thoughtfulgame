@@ -39,6 +39,17 @@ class Room:
         self.east_exit = None
         self.south_exit = None
         self.west_exit = None
+        self.north_door_size = 1
+        self.east_door_size = 1
+        self.south_door_size = 1
+        self.west_door_size = 1
+        self.set_all_door_sizes(2)
+
+    def set_all_door_sizes(self, door_size):
+        self.north_door_size = door_size
+        self.east_door_size = door_size
+        self.south_door_size = door_size
+        self.west_door_size = door_size
 
     def set_exits(self, north_exit=None, east_exit=None, south_exit=None, west_exit=None):
         self.north_exit = north_exit

@@ -46,23 +46,32 @@ class TileMapGenerator:
 
         return tile_map
 
-    def wall_in_map(self, tile_map, door_size=1, north_exit=None, east_exit=None, south_exit=None, west_exit=None):
+    def wall_in_map(self, tile_map, wall_type=WALL, room=None, north_exit=None, east_exit=None, south_exit=None, west_exit=None, north_door_size=1, east_door_size=1, south_door_size=1, west_door_size=1):
         width = len(tile_map[0])
         height = len(tile_map)
+        if room is not None:
+            north_exit = room.north_exit
+            east_exit = room.east_exit
+            south_exit = room.south_exit
+            west_exit = room.west_exit
+            north_door_size = room.north_door_size
+            east_door_size = room.east_door_size
+            south_door_size = room.south_door_size
+            west_door_size = room.west_door_size
 
         for x in range(width):
             # Add north and south walls
-            if north_exit is not None and (x < north_exit - door_size / 2 or x >= north_exit + door_size / 2):
-                tile_map[0][x] = Tile(WALL)
-            if south_exit is not None and (x < south_exit - door_size / 2 or x >= south_exit + door_size / 2):
-                tile_map[height - 1][x] = Tile(WALL)
+            if north_exit is not None and (x < north_exit - north_door_size / 2 or x >= north_exit + north_door_size / 2):
+                tile_map[0][x] = Tile(wall_type)
+            if south_exit is not None and (x < south_exit - south_door_size / 2 or x >= south_exit + south_door_size / 2):
+                tile_map[height - 1][x] = Tile(wall_type)
 
         for y in range(height):
             # Add east and west walls
-            if west_exit is not None and (y < west_exit - door_size / 2 or y >= west_exit + door_size / 2):
-                tile_map[y][0] = Tile(WALL)
-            if east_exit is not None and (y < east_exit - door_size / 2 or y >= east_exit + door_size / 2):
-                tile_map[y][width - 1] = Tile(WALL)
+            if west_exit is not None and (y < west_exit - west_door_size / 2 or y >= west_exit + west_door_size / 2):
+                tile_map[y][0] = Tile(wall_type)
+            if east_exit is not None and (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
+                tile_map[y][width - 1] = Tile(wall_type)
 
     def generate_characters(self, tile_map, num_characters=5, character_types=("elf", "goblin", "human")):
         characters = []
