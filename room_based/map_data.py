@@ -40,6 +40,7 @@ class Room:
         self.height = height
         self.room_pos = None
         self.initialized = False
+        self.description = "Description not yet written. :("
 
         # Exits
         self.north_exit = None

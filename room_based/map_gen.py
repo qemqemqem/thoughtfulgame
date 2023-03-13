@@ -1,10 +1,14 @@
 import random
+import threading
 from noise import snoise2  # You need to install the noise module
 
+from gpt.file_cache_manager import StringCache
 from room_based.location_utils import *
 from map_data import *
 from location_utils import *
+from gpt.gpt import *
 
+string_cache = StringCache(cache_file="../gpt/cache.json")
 
 class TileMapGenerator:
     def __init__(self, room, seed=None):
@@ -107,6 +111,17 @@ def add_exits_to_room(room: Room, map_data: MapData, door_chance=1.0):
     room.set_exits(north_exit, east_exit, south_exit, west_exit)
 
 
+def _room_description_helper(room: Room, map_data: MapData):
+    prompt = "Here is a place " + random.choice(("with a lot of trees", "with a lot of rocks", "with a lot of grass", "with a lot of water")) + ".\nIt contains these things:\n"
+    dedup = []
+    for ch in room.characters:
+        if ch.type not in dedup:
+            dedup.append(ch.type)
+            prompt += "A " + ch.type + ": " + string_cache.get(ch.type) + "\n"
+    prompt += "\nPlease write a short one sentence description of this room in the style of JRR Tolkien."
+    room.description = prompt_completion_chat(prompt, n=1, temperature=0.1)
+
+
 def initialize_new_room(room, map_data):
     room.initialized = True
     add_exits_to_room(room, map_data)
@@ -115,6 +130,8 @@ def initialize_new_room(room, map_data):
     map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room.tile_map, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
+    t = threading.Thread(target=_room_description_helper, args=(room, map_data))
+    t.start()
 
 
 def initialize_room_and_neighbors(room, map_data):

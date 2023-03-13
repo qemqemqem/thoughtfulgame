@@ -37,6 +37,7 @@ class TileMapRenderer:
 
     def render_descriptions(self, screen, room):
         text = []
+        text.append(room.description)
         for character in room.characters:
-            text.append("A CHARACTER! " + character.type)
-        self.writer.write(text, screen, top_left=(0, room.height * self.TILE_SIZE))
+            text.append(" * " + character.type)
+        self.writer.write_break_long_lines(text, screen, top_left=(0, room.height * self.TILE_SIZE))

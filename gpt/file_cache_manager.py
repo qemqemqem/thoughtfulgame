@@ -3,7 +3,7 @@ import json
 DEFAULT_CACHE_FILE_NAME = "cache.json"
 
 class StringCache:
-    def __init__(self, cache_file):
+    def __init__(self, cache_file=DEFAULT_CACHE_FILE_NAME):
         self.cache_file = cache_file
         self.cache = self.load_cache()
 
@@ -24,8 +24,9 @@ class StringCache:
     def set(self, key, value):
         self.cache[key] = value
 
+
 if __name__ == '__main__':
-    cache = StringCache('cache.json')
+    cache = StringCache('test_cache.json')
     cache.set('key1', 'value1')
     cache.set('key2', 'value2')
     cache.save_cache()
