@@ -5,6 +5,7 @@ from map_data import *
 from map_render import TileMapRenderer
 from game_logic import Game
 from map_gen import initialize_new_room
+from game_loop import main_game_loop
 
 # Room dimensions, needed to initialize pygame
 width = 30
@@ -26,26 +27,6 @@ player.character.player_character = True
 renderer = TileMapRenderer(tile_size=tile_size)
 game = Game(map_data, room)
 
-# Main game loop
-running = True
-clock = pygame.time.Clock()
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Update the game state
-    game.handle_input()
-    game.update()
-    game.check_player_door()
-
-    # Render the tile map and characters
-    screen.fill((0, 0, 0))
-    renderer.render_map(screen, game.room)
-    pygame.display.flip()
-
-    # Cap the frame rate
-    clock.tick(60)
+main_game_loop(game, screen, renderer)
 
 pygame.quit()
