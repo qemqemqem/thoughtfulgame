@@ -44,7 +44,7 @@ class Game:
 
     def update(self):
         # Update the player's position based on its velocity
-        move_character(self.player, self.player.vx * self.PLAYER_SPEED, self.player.vy * self.PLAYER_SPEED, self.tile_map, self.all_characters, epsilon = 1.0)
+        move_character(self.player, self.player.vx * self.PLAYER_SPEED, self.player.vy * self.PLAYER_SPEED, self.tile_map, self.all_characters)
 
         # Prevent the player from moving off the screen
         self.bound_character_to_room(self.player)
@@ -61,10 +61,23 @@ class Game:
                 npc.vy /= length
 
             # Update the NPC's position based on its velocity
-            move_character(npc, npc.vx * self.NPC_SPEED, npc.vy * self.NPC_SPEED, self.tile_map, self.all_characters, epsilon=1.0)
+            move_character(npc, npc.vx * self.NPC_SPEED, npc.vy * self.NPC_SPEED, self.tile_map, self.all_characters)
 
             # Prevent the NPC from moving off the screen
             self.bound_character_to_room(npc)
+
+    def move_character_to_new_room(self, character, old_room, new_room):
+        old_room.characters.remove(character)
+        new_room.characters.append(character)
+        character.room = new_room
+        # Move the character to the opposite side of the new room
+        direction = new_room.room_pos - old_room.room_pos
+        # Note that these signs are different and that might cause problems later
+        character.x = character.x - direction.x * (old_room.width - 1)
+        character.y = character.y + direction.y * (old_room.height - 1)
+        if character.player_character:
+            new_room.player_character = character
+            old_room.player_character = None
 
     def move_to_new_room(self, room):
         old_room = self.room
@@ -72,6 +85,7 @@ class Game:
         self.tile_map = self.room.tile_map
         # self.player = self.room.characters[0]
         self.npcs = self.room.characters[:]
+        self.move_character_to_new_room(self.player, old_room, self.room)
         self.all_characters = self.room.characters
 
     def check_player_door(self):

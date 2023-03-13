@@ -85,7 +85,7 @@ class TileMapGenerator:
                 y = random.uniform(0, self.height)
                 nearby_tiles = get_nearby_tiles(tile_map, x, y, epsilon=1.0)
                 if all(not tile.type.blocks_movement for tile in nearby_tiles):
-                    character = Character(character_type, x, y)
+                    character = Character(character_type, x, y, self.room)
                     characters.append(character)
                     break
         return characters

@@ -1,8 +1,8 @@
 from vec2i import Vec2i
 
-NORTH_DIR = Vec2i(0, -1)
+NORTH_DIR = Vec2i(0, 1)
 EAST_DIR = Vec2i(1, 0)
-SOUTH_DIR = Vec2i(0, 1)
+SOUTH_DIR = Vec2i(0, -1)
 WEST_DIR = Vec2i(-1, 0)
 
 
@@ -19,7 +19,7 @@ def get_nearby_tiles(tile_map, x, y, radius:int=2, epsilon=0.5):
     return nearby_tiles
 
 
-def move_character(character, dx, dy, tile_map, all_characters, epsilon=1.0):
+def move_character(character, dx, dy, tile_map, all_characters, epsilon=0.8):
     """Move a character by a given amount and prevent it from colliding with walls or water."""
     new_x = character.x + dx
     new_y = character.y + dy

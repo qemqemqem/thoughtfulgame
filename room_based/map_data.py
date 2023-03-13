@@ -1,3 +1,4 @@
+# DON'T DEPEND ON ANY NON-DATA FILES FROM HERE
 
 from vec2i import Vec2i
 
@@ -21,13 +22,14 @@ class Tile:
 
 
 class Character:
-    def __init__(self, character_type, x, y):
+    def __init__(self, character_type, x, y, room):
         self.type = character_type
         self.x = x
         self.y = y
         self.vx = 0  # velocity in the x direction
         self.vy = 0  # velocity in the y direction
         self.player_character = False
+        self.room = room
 
 
 class Room:
