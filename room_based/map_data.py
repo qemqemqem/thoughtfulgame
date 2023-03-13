@@ -83,3 +83,7 @@ class MapData:
             self.rooms[room_pos].room_pos = room_pos
             initialized = False
         return self.rooms[room_pos], initialized
+
+
+    def has_room(self, room_pos:Vec2i):
+        return room_pos in self.rooms

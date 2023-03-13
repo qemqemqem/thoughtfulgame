@@ -1,11 +1,10 @@
 import pygame
 import random
 
-from map_gen import TileMapGenerator
 from map_data import *
 from map_render import TileMapRenderer
 from game_logic import Game
-from location_utils import is_character_in_doorway
+from map_gen import initialize_new_room
 
 # Room dimensions, needed to initialize pygame
 width = 30
@@ -20,21 +19,12 @@ pygame.display.set_caption("Tile Map Renderer")
 # Generation
 player = PlayerData()
 map_data = MapData(width, height)
-
-def initialize_new_room(room):
-    room.set_exits(random.randint(1, width - 1), random.randint(1, height - 1), random.randint(1, width - 1),
-                   random.randint(1, height - 1))
-    map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
-    room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
-    map_generator.wall_in_map(room.tile_map, WALL, room)
-    room.characters = map_generator.generate_characters(room.tile_map, num_characters=5,
-                                                        character_types=("elf", "goblin", "human"))
-
 room, _ = map_data.get_room(player.room_pos)
-initialize_new_room(room)
+initialize_new_room(room, map_data)
 player.character = room.characters[0]  # The first character is the player character
+player.character.player_character = True
 renderer = TileMapRenderer(tile_size=tile_size)
-game = Game(map_data, room, initialize_new_room)
+game = Game(map_data, room)
 
 # Main game loop
 running = True

@@ -3,6 +3,7 @@ from noise import snoise2  # You need to install the noise module
 
 from room_based.location_utils import *
 from map_data import *
+from location_utils import *
 
 
 class TileMapGenerator:
@@ -61,16 +62,16 @@ class TileMapGenerator:
 
         for x in range(width):
             # Add north and south walls
-            if north_exit is not None and (x < north_exit - north_door_size / 2 or x >= north_exit + north_door_size / 2):
+            if north_exit is None or (x < north_exit - north_door_size / 2 or x >= north_exit + north_door_size / 2):
                 tile_map[0][x] = Tile(wall_type)
-            if south_exit is not None and (x < south_exit - south_door_size / 2 or x >= south_exit + south_door_size / 2):
+            if south_exit is None or (x < south_exit - south_door_size / 2 or x >= south_exit + south_door_size / 2):
                 tile_map[height - 1][x] = Tile(wall_type)
 
         for y in range(height):
             # Add east and west walls
-            if west_exit is not None and (y < west_exit - west_door_size / 2 or y >= west_exit + west_door_size / 2):
+            if west_exit is None or (y < west_exit - west_door_size / 2 or y >= west_exit + west_door_size / 2):
                 tile_map[y][0] = Tile(wall_type)
-            if east_exit is not None and (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
+            if east_exit is None or (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
                 tile_map[y][width - 1] = Tile(wall_type)
 
     def generate_characters(self, tile_map, num_characters=5, character_types=("elf", "goblin", "human")):
@@ -87,5 +88,29 @@ class TileMapGenerator:
                     character = Character(character_type, x, y)
                     characters.append(character)
                     break
-        characters[0].player_character = True
         return characters
+
+
+def add_exits_to_room(room: Room, map_data: MapData, door_chance=1.0):
+    if len(map_data.rooms) == 1:
+        # The first room has 4 exits
+        room.set_exits(random.randint(1, room.width - 1), random.randint(1, room.height - 1), random.randint(1, room.width - 1), random.randint(1, room.height - 1))
+        return
+    north_exit = None if random.random() > door_chance else random.randint(1, room.width - 1)
+    east_exit = None if random.random() > door_chance else random.randint(1, room.height - 1)
+    south_exit = None if random.random() > door_chance else random.randint(1, room.width - 1)
+    west_exit = None if random.random() > door_chance else random.randint(1, room.height - 1)
+    north_exit = map_data.get_room(room.room_pos + NORTH_DIR)[0].south_exit if map_data.has_room(room.room_pos + NORTH_DIR) else north_exit
+    east_exit = map_data.get_room(room.room_pos + EAST_DIR)[0].west_exit if map_data.has_room(room.room_pos + EAST_DIR) else east_exit
+    south_exit = map_data.get_room(room.room_pos + SOUTH_DIR)[0].north_exit if map_data.has_room(room.room_pos + SOUTH_DIR) else south_exit
+    west_exit = map_data.get_room(room.room_pos + WEST_DIR)[0].east_exit if map_data.has_room(room.room_pos + WEST_DIR) else west_exit
+    room.set_exits(north_exit, east_exit, south_exit, west_exit)
+
+
+def initialize_new_room(room, map_data):
+    add_exits_to_room(room, map_data)
+    map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
+    room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
+    map_generator.wall_in_map(room.tile_map, WALL, room)
+    room.characters = map_generator.generate_characters(room.tile_map, num_characters=5,
+                                                        character_types=("elf", "goblin", "human"))
