@@ -1,6 +1,8 @@
 import os
 import pygame
 
+from room_based.game_logic import Game
+from room_based.map_data import Room
 from utils.pygame_writer import PygameWriter
 
 
@@ -18,7 +20,7 @@ class TileMapRenderer:
                 image_path = os.path.join("../images", filename)
                 image = pygame.image.load(image_path).convert_alpha()
                 image = pygame.transform.scale(image, (self.TILE_SIZE, self.TILE_SIZE))
-                self.images[name] = image
+                self.images[name.replace("-", " ")] = image
 
         self.writer = writer
 
@@ -30,14 +32,25 @@ class TileMapRenderer:
                 rect = pygame.Rect(x * self.TILE_SIZE, y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
                 screen.blit(image, rect)
 
+        for thing in room.things:
+            image = self.images[thing.type]
+            rect = pygame.Rect(thing.x * self.TILE_SIZE, thing.y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
+            screen.blit(image, rect)
+
         for character in room.characters:
             image = self.images[character.type]
             rect = pygame.Rect(character.x * self.TILE_SIZE, character.y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
             screen.blit(image, rect)
 
-    def render_descriptions(self, screen, room):
+    def render_descriptions(self, screen, game: Game):
+        room: Room = game.room
         text = []
         text.append(room.description)
-        for character in room.characters:
-            text.append(" * " + character.type)
+        text.append("")
+        text.append("Nearby:")
+        chars, things = room.get_nearby(game.player.x, game.player.y, distance=3)
+        for character in chars:
+            text.append(" * " + character.type + ", " + character.description)
+        for thing in things:
+            text.append(" * " + thing.type + ", " + thing.description)
         self.writer.write_break_long_lines(text, screen, top_left=(0, room.height * self.TILE_SIZE))

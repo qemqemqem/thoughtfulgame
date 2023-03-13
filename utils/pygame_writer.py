@@ -1,9 +1,9 @@
 import pygame
 
 class PygameWriter:
-    def __init__(self):
+    def __init__(self, lines_of_text = 10):
         self.font_size = 24
-        self.lines_of_text = 10
+        self.lines_of_text = lines_of_text
         self.text_space = self.font_size * self.lines_of_text
         self.font = pygame.font.Font(None, self.font_size)
 

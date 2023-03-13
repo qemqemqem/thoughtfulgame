@@ -78,7 +78,7 @@ class TileMapGenerator:
             if east_exit is None or (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
                 tile_map[y][width - 1] = Tile(wall_type)
 
-    def generate_characters(self, tile_map, num_characters=5, character_types=("elf", "goblin", "human")):
+    def generate_characters(self, room, num_characters=5, character_types=("elf", "goblin", "human")):
         characters = []
         for _ in range(num_characters):
             character_type = random.choice(character_types)
@@ -87,12 +87,26 @@ class TileMapGenerator:
             while True:
                 x = random.uniform(0, self.width)
                 y = random.uniform(0, self.height)
-                nearby_tiles = get_nearby_tiles(tile_map, x, y, epsilon=1.0)
+                nearby_tiles = get_nearby_tiles(room.tile_map, x, y, epsilon=1.0)
                 if all(not tile.type.blocks_movement for tile in nearby_tiles):
                     character = Character(character_type, x, y, self.room)
+                    character.description = string_cache.get(character_type)
                     characters.append(character)
                     break
         return characters
+
+    def generate_items(self, room, num_items=5, item_types=None):
+        if item_types is None:
+            item_types = list(string_cache.cache.keys())
+        items = []
+        for _ in range(num_items):
+            item_type = random.choice(item_types)
+            x = int(random.uniform(0, self.width))
+            y = int(random.uniform(0, self.height))
+            item = InanimateObject(item_type, x, y, self.room)
+            item.description = string_cache.get(item_type)
+            items.append(item)
+        return items
 
 
 def add_exits_to_room(room: Room, map_data: MapData, door_chance=1.0):
@@ -112,12 +126,12 @@ def add_exits_to_room(room: Room, map_data: MapData, door_chance=1.0):
 
 
 def _room_description_helper(room: Room, map_data: MapData):
-    prompt = "Here is a place " + random.choice(("with a lot of trees", "with a lot of rocks", "with a lot of grass", "with a lot of water")) + ".\nIt contains these things:\n"
+    prompt = "Here is a place with " + room.landscape_description + ".\nIt contains these things:\n"
     dedup = []
-    for ch in room.characters:
-        if ch.type not in dedup:
-            dedup.append(ch.type)
-            prompt += "A " + ch.type + ": " + string_cache.get(ch.type) + "\n"
+    for th in room.things:
+        if th.type not in dedup:
+            dedup.append(th.type)
+            prompt += "A " + th.type + ": " + th.description + "\n"
     prompt += "\nPlease write a short one sentence description of this room in the style of JRR Tolkien."
     room.description = prompt_completion_chat(prompt, n=1, temperature=0.1)
 
@@ -128,8 +142,9 @@ def initialize_new_room(room, map_data):
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
     map_generator.wall_in_map(room.tile_map, WALL, room)
-    room.characters = map_generator.generate_characters(room.tile_map, num_characters=5,
+    room.characters = map_generator.generate_characters(room, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
+    room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
     t = threading.Thread(target=_room_description_helper, args=(room, map_data))
     t.start()
 

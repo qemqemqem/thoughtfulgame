@@ -1,4 +1,5 @@
 # DON'T DEPEND ON ANY NON-DATA FILES FROM HERE
+import random
 
 from utils.vec2i import Vec2i
 
@@ -30,17 +31,29 @@ class Character:
         self.vy = 0  # velocity in the y direction
         self.player_character = False
         self.room = room
+        self.description = ""
+
+
+class InanimateObject:
+    def __init__(self, object_type, x, y, room):
+        self.type = object_type
+        self.x = x
+        self.y = y
+        self.room = room
+        self.description = ""
 
 
 class Room:
     def __init__(self, width, height):
         self.tile_map = None
-        self.characters = []
+        self.characters: list[Character] = []
+        self.things: list[InanimateObject] = []
         self.width = width
         self.height = height
         self.room_pos = None
         self.initialized = False
-        self.description = "Description not yet written. :("
+        self.description = "Use arrow keys to move, press Q to quit."
+        self.landscape_description = random.choice(("a lot of trees", "a lot of rocks", "a lot of grass", "a lot of water"))
 
         # Exits
         self.north_exit = None
@@ -64,6 +77,19 @@ class Room:
         self.east_exit = east_exit
         self.south_exit = south_exit
         self.west_exit = west_exit
+
+    def get_nearby(self, x, y, distance=1):
+        nearby_characters = []
+        for character in self.characters:
+            if character.player_character:
+                continue
+            if abs(character.x - x) <= distance and abs(character.y - y) <= distance:
+                nearby_characters.append(character)
+        nearby_things = []
+        for thing in self.things:
+            if abs(thing.x - x) <= distance and abs(thing.y - y) <= distance:
+                nearby_things.append(thing)
+        return nearby_characters, nearby_things
 
 
 class PlayerData:

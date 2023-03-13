@@ -15,7 +15,7 @@ tile_size = 32
 
 # Initialize pygame first because it's used to load images
 pygame.init()
-writer = PygameWriter()
+writer = PygameWriter(lines_of_text=14)
 screen = pygame.display.set_mode((width * tile_size, height * tile_size + writer.text_space))
 pygame.display.set_caption("Tile Map Renderer")
 
