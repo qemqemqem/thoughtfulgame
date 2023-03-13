@@ -1,4 +1,4 @@
-from vec2i import Vec2i
+from utils.vec2i import Vec2i
 
 NORTH_DIR = Vec2i(0, 1)
 EAST_DIR = Vec2i(1, 0)

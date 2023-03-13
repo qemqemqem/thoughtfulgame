@@ -1,6 +1,6 @@
 # DON'T DEPEND ON ANY NON-DATA FILES FROM HERE
 
-from vec2i import Vec2i
+from utils.vec2i import Vec2i
 
 
 class TileType:
