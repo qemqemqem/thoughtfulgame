@@ -108,9 +108,18 @@ def add_exits_to_room(room: Room, map_data: MapData, door_chance=1.0):
 
 
 def initialize_new_room(room, map_data):
+    room.initialized = True
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
     map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room.tile_map, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
+
+
+def initialize_room_and_neighbors(room, map_data):
+    initialize_new_room(room, map_data)
+    for direction in (NORTH_DIR, EAST_DIR, SOUTH_DIR, WEST_DIR):
+        adj_room, initialized = map_data.get_room(room.room_pos + direction)
+        if adj_room is not None and not initialized:
+            initialize_new_room(adj_room, map_data)

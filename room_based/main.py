@@ -4,7 +4,7 @@ import random
 from map_data import *
 from map_render import TileMapRenderer
 from game_logic import Game
-from map_gen import initialize_new_room
+from map_gen import initialize_room_and_neighbors
 from game_loop import main_game_loop
 from utils.pygame_writer import PygameWriter
 
@@ -23,7 +23,7 @@ pygame.display.set_caption("Tile Map Renderer")
 player = PlayerData()
 map_data = MapData(width, height)
 room, _ = map_data.get_room(player.room_pos)
-initialize_new_room(room, map_data)
+initialize_room_and_neighbors(room, map_data)
 player.character = room.characters[0]  # The first character is the player character
 player.character.player_character = True
 renderer = TileMapRenderer(writer, tile_size=tile_size)

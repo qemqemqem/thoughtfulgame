@@ -39,6 +39,7 @@ class Room:
         self.width = width
         self.height = height
         self.room_pos = None
+        self.initialized = False
 
         # Exits
         self.north_exit = None
@@ -83,6 +84,8 @@ class MapData:
         if room_pos not in self.rooms:
             self.rooms[room_pos] = Room(self.default_room_width, self.default_room_height)
             self.rooms[room_pos].room_pos = room_pos
+            initialized = False
+        elif not self.rooms[room_pos].initialized:
             initialized = False
         return self.rooms[room_pos], initialized
 

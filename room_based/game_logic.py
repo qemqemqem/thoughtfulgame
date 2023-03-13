@@ -3,7 +3,7 @@ import random
 import pygame
 
 from location_utils import move_character, is_character_in_doorway
-from map_gen import initialize_new_room
+from map_gen import initialize_room_and_neighbors
 
 
 class Game:
@@ -94,5 +94,5 @@ class Game:
             return
         new_room, initialized = self.map_data.get_room(self.room.room_pos + direction)
         if not initialized:
-            initialize_new_room(new_room, self.map_data)
+            initialize_room_and_neighbors(new_room, self.map_data)
         self.move_to_new_room(new_room)
