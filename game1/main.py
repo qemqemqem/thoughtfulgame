@@ -3,13 +3,13 @@ import os
 import random
 import threading
 
-from gpt import prompt_completion
-from gpt_thoughts_prompter import generate_prompt_from_unknown_items
+from gpt.gpt import prompt_completion
+from gpt.gpt_thoughts_prompter import generate_prompt_from_unknown_items
 from thing_class import Thing
 from thought_manager import ThoughtManager
-from file_cache_manager import StringCache, DEFAULT_CACHE_FILE_NAME
+from gpt.file_cache_manager import StringCache, DEFAULT_CACHE_FILE_NAME
 from action_log_manager import ActionLogManager
-from vec2i import Vec2i
+from utils.vec2i import Vec2i
 # Initialize Pygame
 pygame.init()
 

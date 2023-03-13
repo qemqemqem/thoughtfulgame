@@ -1,11 +1,13 @@
 import os
 import pygame
 
+from utils.pygame_writer import PygameWriter
+
 
 class TileMapRenderer:
     TILE_SIZE = 32
 
-    def __init__(self, tile_size=32):
+    def __init__(self, writer:PygameWriter, tile_size=32):
         self.TILE_SIZE = tile_size
         self.images = {}
 
@@ -17,6 +19,8 @@ class TileMapRenderer:
                 image = pygame.image.load(image_path).convert_alpha()
                 image = pygame.transform.scale(image, (self.TILE_SIZE, self.TILE_SIZE))
                 self.images[name] = image
+
+        self.writer = writer
 
     def render_map(self, screen, room):
         for y in range(room.height):
@@ -30,3 +34,9 @@ class TileMapRenderer:
             image = self.images[character.type]
             rect = pygame.Rect(character.x * self.TILE_SIZE, character.y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
             screen.blit(image, rect)
+
+    def render_descriptions(self, screen, room):
+        text = []
+        for character in room.characters:
+            text.append("A CHARACTER! " + character.type)
+        self.writer.write(text, screen, top_left=(0, room.height * self.TILE_SIZE))

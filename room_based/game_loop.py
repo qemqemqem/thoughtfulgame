@@ -1,8 +1,10 @@
 import pygame
 
+from room_based.map_render import TileMapRenderer
+from room_based.game_logic import Game
 
-def main_game_loop(game, screen, renderer):
-    # Main game loop
+
+def main_game_loop(game: Game, screen, renderer: TileMapRenderer):
     running = True
     clock = pygame.time.Clock()
     while running:
@@ -19,6 +21,7 @@ def main_game_loop(game, screen, renderer):
         # Render the tile map and characters
         screen.fill((0, 0, 0))
         renderer.render_map(screen, game.room)
+        renderer.render_descriptions(screen, game.room)
         pygame.display.flip()
 
         # Cap the frame rate
