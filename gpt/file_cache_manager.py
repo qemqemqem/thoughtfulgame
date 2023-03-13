@@ -16,7 +16,7 @@ class StringCache:
 
     def save_cache(self):
         with open(self.cache_file, 'w') as f:
-            json.dump(self.cache, f)
+            json.dump(self.cache, f, indent=4, sort_keys=True)
 
     def get(self, key):
         return self.cache.get(key, None)

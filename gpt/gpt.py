@@ -45,14 +45,14 @@ def prompt_completion(question, engine="davinci-instruct-beta", max_tokens=64, t
     return answer
 
 
-def prompt_completion_chat(question, model="gpt-3.5-turbo", n=1, temperature=0.0, max_tokens=256):
+def prompt_completion_chat(question, model="gpt-3.5-turbo", n=1, temperature=0.0, max_tokens=256, system_description="You are a helpful assistant that writes descriptions for a fantasy game."):
     start_time = time.perf_counter()
     prompt = f"{question} "
     response = openai.ChatCompletion.create(
         # https://openai.com/blog/introducing-chatgpt-and-whisper-apis
         model=model,
         messages=[
-            {"role": "system", "content": "You are a helpful assistant that writes descriptions for a fantasy game."},
+            {"role": "system", "content": system_description},
             {"role": "user", "content": prompt},
         ],
         max_tokens=max_tokens,
