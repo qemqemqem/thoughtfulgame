@@ -7,6 +7,7 @@ from game_logic import Game
 from map_gen import initialize_room_and_neighbors
 from game_loop import main_game_loop
 from utils.pygame_writer import PygameWriter
+from think_gen import generate_thoughts
 
 # Room dimensions, needed to initialize pygame
 width = 30
@@ -26,6 +27,7 @@ room, _ = map_data.get_room(player.room_pos)
 initialize_room_and_neighbors(room, map_data)
 player.character = room.characters[0]  # The first character is the player character
 player.character.player_character = True
+generate_thoughts(player.character, room)
 renderer = TileMapRenderer(writer, tile_size=tile_size)
 game = Game(map_data, room)
 

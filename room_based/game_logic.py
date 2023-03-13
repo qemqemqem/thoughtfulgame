@@ -4,6 +4,8 @@ import pygame
 
 from location_utils import move_character, is_character_in_doorway
 from map_gen import initialize_room_and_neighbors
+from map_data import *
+from room_based.think_gen import generate_thoughts
 
 
 class Game:
@@ -11,12 +13,12 @@ class Game:
     NPC_SPEED = 0.15
 
     def __init__(self, map_data, current_room):
-        self.map_data = map_data
-        self.room = current_room
+        self.map_data: MapData = map_data
+        self.room: Room = current_room
         self.tile_map = self.room.tile_map
-        self.player = self.room.characters[0]
-        self.npcs = self.room.characters[1:]
-        self.all_characters = self.room.characters
+        self.player: Character = self.room.characters[0]
+        self.npcs: list[Character] = self.room.characters[1:]
+        self.all_characters: list[Character] = self.room.characters
 
     def handle_input(self):
         keys = pygame.key.get_pressed()
@@ -66,6 +68,7 @@ class Game:
             # Prevent the NPC from moving off the screen
             self.bound_character_to_room(npc)
 
+
     def move_character_to_new_room(self, character, old_room, new_room):
         old_room.characters.remove(character)
         new_room.characters.append(character)
@@ -78,6 +81,9 @@ class Game:
         if character.player_character:
             new_room.player_character = character
             old_room.player_character = None
+        if character.player_character:
+            generate_thoughts(character, new_room)
+
 
     def move_to_new_room(self, room):
         old_room = self.room

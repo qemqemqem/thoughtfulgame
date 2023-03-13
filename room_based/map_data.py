@@ -1,6 +1,7 @@
 # DON'T DEPEND ON ANY NON-DATA FILES FROM HERE
 import random
 
+from room_based.thought_data import ThoughtBrain
 from utils.vec2i import Vec2i
 
 
@@ -29,9 +30,10 @@ class Character:
         self.y = y
         self.vx = 0  # velocity in the x direction
         self.vy = 0  # velocity in the y direction
-        self.player_character = False
-        self.room = room
-        self.description = ""
+        self.player_character: bool = False
+        self.room: Room = room
+        self.description: str = ""
+        self.thought_brain: ThoughtBrain = ThoughtBrain()
 
 
 class InanimateObject:
@@ -96,8 +98,8 @@ class PlayerData:
     def __init__(self, room_pos:Vec2i=None, character=None):
         if room_pos is None:
             room_pos = Vec2i(0, 0)
-        self.room_pos = room_pos
-        self.character = character
+        self.room_pos: Vec2i = room_pos
+        self.character: Character = character
 
 
 class MapData:

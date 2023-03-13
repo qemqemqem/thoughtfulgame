@@ -47,6 +47,9 @@ class TileMapRenderer:
         text = []
         text.append(room.description)
         text.append("")
+        for i in range(len(game.player.thought_brain.current_thought_options)):
+            text.append(f"{'ABCDEFGH'[i]}) {game.player.thought_brain.current_thought_options[i].text}")
+        text.append("")
         text.append("Nearby:")
         chars, things = room.get_nearby(game.player.x, game.player.y, distance=3)
         for character in chars:
