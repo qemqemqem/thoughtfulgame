@@ -45,16 +45,26 @@ def prompt_completion(question, engine="davinci-instruct-beta", max_tokens=64, t
     return answer
 
 
-def prompt_completion_chat(question, model="gpt-3.5-turbo"):
+def prompt_completion_chat(question, model="gpt-3.5-turbo", n=1, temperature=0.0, max_tokens=256):
     start_time = time.perf_counter()
     prompt = f"{question} "
     response = openai.ChatCompletion.create(
         # https://openai.com/blog/introducing-chatgpt-and-whisper-apis
-        model=model,  # "curie" is cheaper, "davinci" is good, there's also an option to get chatgpt on the website
-        messages=[{"role": "user", "content": prompt}],
+        model=model,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that writes descriptions for a fantasy game."},
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=max_tokens,
+        temperature=temperature,
+        n=n,
     )
-    answer = response.choices[0].message.content.strip()
+    answers = []
+    for i in range(n):
+        answers.append(response.choices[i].message.content.strip())
     # print(f"\tPROMPT: {question}\n\tANSWER: {answer}\n")
     duration = time.perf_counter() - start_time
-    print(f"Duration: {duration:.2f} seconds: {answer}")
-    return answer
+    print(f"Duration: {duration:.2f} seconds: {n}")
+    if n == 1:
+        return answers[0]
+    return answers
