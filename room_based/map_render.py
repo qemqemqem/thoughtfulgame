@@ -52,8 +52,8 @@ class TileMapRenderer:
         text.append("")
         text.append("Nearby:")
         chars, things = room.get_nearby(game.player.x, game.player.y, distance=3)
-        for character in chars:
-            text.append(" * " + character.type + ", " + character.description)
         for thing in things:
             text.append(" * " + thing.type + ", " + thing.description)
+        for character in chars:
+            text.append(" * " + character.type + ", " + character.description)
         self.writer.write_break_long_lines(text, screen, top_left=(0, room.height * self.TILE_SIZE))
