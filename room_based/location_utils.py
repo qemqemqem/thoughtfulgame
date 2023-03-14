@@ -39,15 +39,15 @@ def move_character(character, dx, dy, tile_map, all_characters, epsilon=0.8):
 
 def is_character_in_doorway(character, room):
     # North exit
-    if room.north_exit is not None and character.vy < 0 and abs(character.y - 0) < 0.5 and room.north_exit - room.north_door_size / 2 <= character.x < room.north_exit + room.north_door_size / 2:
+    if character.vy < 0 and abs(character.y - 0) < 0.5: #and room.north_exit is not None and room.north_exit - room.north_door_size / 2 <= character.x < room.north_exit + room.north_door_size / 2:
         return True, NORTH_DIR
     # East exit
-    if room.east_exit is not None and character.vx > 0 and abs(character.x - room.width) < 1.5 and room.east_exit - room.east_door_size / 2 <= character.y < room.east_exit + room.east_door_size / 2:
+    if character.vx > 0 and abs(character.x - room.width) < 1.5:# and room.east_exit is not None  and room.east_exit - room.east_door_size / 2 <= character.y < room.east_exit + room.east_door_size / 2:
         return True, EAST_DIR
     # South exit
-    if room.south_exit is not None and character.vy > 0 and abs(character.y - room.height) < 1.5 and room.south_exit - room.south_door_size / 2 <= character.x < room.south_exit + room.south_door_size / 2:
+    if character.vy > 0 and abs(character.y - room.height) < 1.5:# and room.south_exit is not None  and room.south_exit - room.south_door_size / 2 <= character.x < room.south_exit + room.south_door_size / 2:
         return True, SOUTH_DIR
     # West exit
-    if room.west_exit is not None and character.vx < 0 and abs(character.x - 0) < 0.5 and room.west_exit - room.west_door_size / 2 <= character.y < room.west_exit + room.west_door_size / 2:
+    if character.vx < 0 and abs(character.x - 0) < 0.5:# and room.west_exit is not None  and room.west_exit - room.west_door_size / 2 <= character.y < room.west_exit + room.west_door_size / 2:
         return True, WEST_DIR
     return False, Vec2i(0, 0)
