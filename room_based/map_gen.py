@@ -17,9 +17,9 @@ class TileMapGenerator:
         self.height = room.height
         self.seed = seed if seed is not None else random.randint(0, 65535)
         self.water_scale = 100
-        self.tree_scale = 100
+        self.tree_scale = 50
 
-    def generate_map(self, water_level=0.4, tree_density=0.8, wall_density=0.05, rock_density=0.1):
+    def generate_map(self, water_level=0.4, tree_density=0.9, wall_density=0.05, rock_density=0.1, forest_level=.4):
         # Initialize the map with grass tiles
         tile_map = [[Tile(GRASS) for _ in range(self.width)] for _ in range(self.height)]
 
@@ -39,7 +39,7 @@ class TileMapGenerator:
         # Place trees randomly
         for y in range(self.height):
             for x in range(self.width):
-                if tile_map[y][x].type == GRASS and tree_map[y][x] > 0 and random.random() < tree_density:
+                if tile_map[y][x].type == GRASS and (tree_map[y][x] > forest_level or tree_map[y][x] < -forest_level) and random.random() < tree_density:
                     tile_map[y][x] = Tile(TREE)
 
         # Place walls randomly
@@ -145,7 +145,7 @@ def initialize_new_room(room, map_data):
     room.initialized = True
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
-    room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
+    room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.9, wall_density=0.0, rock_density=0.03)
     #map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
