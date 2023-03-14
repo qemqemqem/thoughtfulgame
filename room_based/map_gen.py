@@ -16,13 +16,18 @@ class TileMapGenerator:
         self.width = room.width
         self.height = room.height
         self.seed = seed if seed is not None else random.randint(0, 65535)
+        self.water_scale = 100
+        self.tree_scale = 100
 
-    def generate_map(self, water_level=0.4, tree_density=0.2, wall_density=0.05, rock_density=0.1):
+    def generate_map(self, water_level=0.4, tree_density=0.8, wall_density=0.05, rock_density=0.1):
         # Initialize the map with grass tiles
         tile_map = [[Tile(GRASS) for _ in range(self.width)] for _ in range(self.height)]
 
         # Generate the Perlin noise map for water placement
-        water_map = [[snoise2(x / 20, y / 20, octaves=3, persistence=0.5, lacunarity=2.0, base=self.seed)
+        water_map = [[snoise2((self.room.room_pos.x*30+x) / self.water_scale, (self.room.room_pos.y*20+y) / self.water_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=self.seed)
+                      for x in range(self.width)] for y in range(self.height)]
+
+        tree_map = [[snoise2((self.room.room_pos.x*30+x-987141) / self.tree_scale, (self.room.room_pos.y*20+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=self.seed)
                       for x in range(self.width)] for y in range(self.height)]
 
         # Place water tiles based on the water map
@@ -34,7 +39,7 @@ class TileMapGenerator:
         # Place trees randomly
         for y in range(self.height):
             for x in range(self.width):
-                if tile_map[y][x].type == GRASS and random.random() < tree_density:
+                if tile_map[y][x].type == GRASS and tree_map[y][x] > 0 and random.random() < tree_density:
                     tile_map[y][x] = Tile(TREE)
 
         # Place walls randomly
@@ -141,7 +146,7 @@ def initialize_new_room(room, map_data):
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.05, wall_density=0.0, rock_density=0.03)
-    map_generator.wall_in_map(room.tile_map, WALL, room)
+    #map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
     room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
