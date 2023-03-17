@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+
 class Vec2i:
-    def __init__(self, x: int=0, y: int=0):
+    def __init__(self, x: int = 0, y: int = 0):
         self.x: int = x
         self.y: int = y
 
@@ -30,4 +31,3 @@ class Vec2i:
     # Define subtractor
     def __sub__(self, other: Vec2i):
         return self.sub(other)
-

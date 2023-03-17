@@ -23,25 +23,25 @@ def compute_nff(grid: [[]]):
         for i in range(0, dim1):
             # Note: each iteration of this loop could be run entirely in parallel without any thread locks
             if sweep_dir is UP:
-                nfv = [i, 0]
+                nfv = [i][0]
             elif sweep_dir is DOWN:
-                nfv = [i, height]
+                nfv = [i][height]
             elif sweep_dir is RIGHT:
-                nfv = [0, i]
+                nfv = [0][i]
             else:
-                nfv = [width, i]
+                nfv = [width][i]
             for j in range(dim2, 0, -1) if reverse else range(0, dim2):
-                f = grid(j, i) if transpose else grid(i, j)
+                f = grid[j][i] if transpose else grid[i][j]
                 if f is not None:
                     nfv = Vec2i(0, 0)
                 elif nfv is not None:
                     nfv = nfv.sub(sweep_dir)
-                prev_nfv = nff[j, i] if transpose else nff[i, j]
+                prev_nfv = nff[j][i] if transpose else nff[i][j]
                 if prev_nfv is None or nfv.x * nfv.x + nfv.y * nfv.y < prev_nfv.x * prev_nfv.x + prev_nfv.y * prev_nfv.y:
                     if transpose:
-                        nff[j, i] = nfv
+                        nff[j][i] = nfv
                     else:
-                        nff[i, j] = nfv
+                        nff[i][j] = nfv
     return nff
 
 
@@ -62,7 +62,7 @@ def color_connected_regions(grid: [[]], is_barrier):
             neighbors_to_process.add(pos)
             while len(neighbors_to_process) != 0:
                 neighbor = neighbors_to_process.pop()
-                colored_grid[neighbor.x, neighbor.y] = region_num
+                colored_grid[neighbor.x][neighbor.y] = region_num
                 processed.add(neighbor)
                 for i in range(-1, 1):
                     for j in range(-1, 1):
@@ -73,8 +73,8 @@ def color_connected_regions(grid: [[]], is_barrier):
                         if neighbor.y is 0 and j is -1 or neighbor.y is height and j is 1:
                             continue
                         new_neighbor = Vec2i(pos.x + i, pos.y + j)
-                        if processed.__contains__(new_neighbor)
+                        if processed.__contains__(new_neighbor):
                             continue
-                        if not is_barrier(grid[new_neighbor.x, new_neighbor.y]):
+                        if not is_barrier(grid[new_neighbor.x][new_neighbor.y]):
                             neighbors_to_process.add(new_neighbor)
     return region_num + 1, colored_grid
