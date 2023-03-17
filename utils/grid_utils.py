@@ -10,7 +10,7 @@ RIGHT = Vec2i(1, 0)
 def compute_nff(grid: [[]]):
     width = len(grid)
     height = len(grid[0])
-    nff = [[None] * height] * width
+    nff = [[None for i in range(height)] for j in range(width)]
     for sweep_dir in [UP, DOWN, RIGHT, LEFT]:
         transpose = sweep_dir is RIGHT or sweep_dir is LEFT
         reverse = sweep_dir is LEFT or sweep_dir is DOWN
@@ -49,7 +49,7 @@ def compute_nff(grid: [[]]):
 def color_connected_regions(grid: [[]], is_barrier):
     width = len(grid)
     height = len(grid[0])
-    colored_grid = [[-1] * height] * width
+    colored_grid = [[-1 for i in range(height)] for j in range(width)]
     processed = set(Vec2i)
     region_num = -1
     for x in range(0, width):
