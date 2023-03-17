@@ -24,7 +24,7 @@ class TileMapGenerator:
         tile_map = [[Tile(GRASS) for _ in range(self.width)] for _ in range(self.height)]
 
         # Generate the Perlin noise map for water placement
-        water_map = [[snoise2((self.room.room_pos.x*30+x) / self.water_scale, (-self.room.room_pos.y*20+y) / self.water_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234)
+        water_map = [[snoise2((self.room.room_pos.x*30+x) / self.water_scale, (-self.room.room_pos.y*20+y) / self.water_scale, octaves=4, persistence=0.5, lacunarity=2, base=1089234)
                       for x in range(self.width)] for y in range(self.height)]
 
         tree_map = [[snoise2((self.room.room_pos.x*30+x-987141) / self.tree_scale, (-self.room.room_pos.y*20+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234)
@@ -145,7 +145,7 @@ def initialize_new_room(room, map_data):
     room.initialized = True
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
-    room.tile_map = map_generator.generate_map(water_level=-.2, tree_density=0.9, wall_density=0.0, rock_density=0.03)
+    room.tile_map = map_generator.generate_map(water_level=-.4, tree_density=0.9, wall_density=0.0, rock_density=0.03)
     #map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
