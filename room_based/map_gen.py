@@ -146,7 +146,7 @@ def initialize_new_room(room, map_data):
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(water_level=0.35, tree_density=0.9, wall_density=0.0, rock_density=0.03)
-    #map_generator.wall_in_map(room.tile_map, WALL, room)
+    map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))
     room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
