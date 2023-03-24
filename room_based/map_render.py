@@ -26,11 +26,11 @@ class TileMapRenderer:
 
         self.writer = writer
 
-    def render_map(self, screen, room):
+    def render_map(self, screen, room: Room):
         for y in range(room.height):
             for x in range(room.width):
-                tile_type = room.tile_map[y][x].type
-                image = self.images[tile_type.name]
+                tile_type = room.tile_map[y][x].get_file_name()
+                image = self.images[tile_type]
                 rect = pygame.Rect(x * self.TILE_SIZE, y * self.TILE_SIZE, self.TILE_SIZE, self.TILE_SIZE)
                 screen.blit(image, rect)
 

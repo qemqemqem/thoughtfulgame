@@ -19,7 +19,7 @@ class TileMapGenerator:
         self.water_scale: int = 100
         self.tree_scale: int = 50
 
-    def generate_map(self, water_level=0.1, tree_density=0.9, wall_density=0.05, rock_density=0.1, forest_level=.4):
+    def generate_map(self, room: Room, water_level=0.1, tree_density=0.9, wall_density=0.05, rock_density=0.1, forest_level=.4):
         # Initialize the map with grass tiles
         tile_map = [[Tile(GRASS) for _ in range(self.width)] for _ in range(self.height)]
 
@@ -32,25 +32,25 @@ class TileMapGenerator:
         for y in range(self.height):
             for x in range(self.width):
                 if water_map[y][x] < water_level:
-                    tile_map[y][x] = Tile(WATER)
+                    tile_map[y][x] = Tile(WATER, room.biome.format_name(random.choice(self.room.biome.water_images)))
 
         # Place trees randomly
         for y in range(self.height):
             for x in range(self.width):
                 if tile_map[y][x].type == GRASS and abs(tree_map[y][x]) > forest_level and random.random() < tree_density:
-                    tile_map[y][x] = Tile(TREE)
+                    tile_map[y][x] = Tile(TREE, room.biome.format_name(random.choice(self.room.biome.tree_images)))
 
         # Place walls randomly
         for y in range(self.height):
             for x in range(self.width):
                 if tile_map[y][x].type == GRASS and random.random() < wall_density:
-                    tile_map[y][x] = Tile(WALL)
+                    tile_map[y][x] = Tile(WALL, room.biome.format_name(random.choice(self.room.biome.wall_images)))
 
         # Place rocks randomly
         for y in range(self.height):
             for x in range(self.width):
                 if tile_map[y][x].type == GRASS and random.random() < rock_density:
-                    tile_map[y][x] = Tile(ROCK)
+                    tile_map[y][x] = Tile(ROCK, room.biome.format_name(random.choice(self.room.biome.rock_images)))
 
         return tile_map
 
@@ -139,11 +139,11 @@ def _room_description_helper(room: Room, map_data: MapData):
     room.description = prompt_completion_chat(prompt, n=1, temperature=0.1)
 
 
-def initialize_new_room(room, map_data):
+def initialize_new_room(room: Room, map_data):
     room.initialized = True
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
-    room.tile_map = map_generator.generate_map(water_level=-.4, tree_density=0.9, wall_density=0.0, rock_density=0.03)
+    room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level, forest_level=room.biome.tree_level, tree_density=0.9, wall_density=0.0, rock_density=room.biome.rock_density)
     map_generator.wall_in_map(room.tile_map, WALL, room)
     room.characters = map_generator.generate_characters(room, num_characters=5,
                                                         character_types=("elf", "goblin", "human"))

@@ -20,8 +20,15 @@ ROCK = TileType("rock", False)
 
 
 class Tile:
-    def __init__(self, tile_type):
+    def __init__(self, tile_type, asset_name = None):
         self.type = tile_type
+        self.asset_name = asset_name
+
+    def get_file_name(self):
+        if self.asset_name is not None:
+            return self.asset_name
+        else:
+            return self.type.name
 
 
 class Character:
@@ -56,13 +63,13 @@ class Biome:
         self.ground_images: list[str] = []
         self.water_images: list[str] = []
         self.wall_images: list[str] = []
-        self.tree_density: float = 0.3
-        self.water_density: float = 0.15
+        # "Level" here refers to a threshold for perlin noise
+        self.tree_level: float = 0.4
+        self.water_level: float = -0.4
         self.rock_density: float = 0.05
 
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
+    def format_name(self, image_name):
+        return "A " + image_name + " in the " + self.name
 
 
 class MapGenConfig:
@@ -72,6 +79,8 @@ class MapGenConfig:
 
 class Room:
     def __init__(self, width, height, biome: Biome = None):
+        if biome is None:
+            biome = Biome("default")
         self.tile_map = None
         self.characters: list[Character] = []
         self.things: list[InanimateObject] = []
@@ -129,7 +138,8 @@ class PlayerData:
 
 
 class MapData:
-    def __init__(self, default_room_width=16, default_room_height=10):
+    def __init__(self, map_gen_config: MapGenConfig, default_room_width=16, default_room_height=10):
+        self.map_gen_config = map_gen_config
         self.default_room_width = default_room_width
         self.default_room_height = default_room_height
         self.rooms: dict[Vec2i, Room] = {}
@@ -137,7 +147,7 @@ class MapData:
     def get_room(self, room_pos:Vec2i):
         initialized = True
         if room_pos not in self.rooms:
-            self.rooms[room_pos] = Room(self.default_room_width, self.default_room_height)
+            self.rooms[room_pos] = Room(self.default_room_width, self.default_room_height, random.choice(self.map_gen_config.biomes))
             self.rooms[room_pos].room_pos = room_pos
             initialized = False
         elif not self.rooms[room_pos].initialized:

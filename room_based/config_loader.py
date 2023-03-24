@@ -5,6 +5,8 @@ from room_based.map_data import *
 from gpt.preload_descriptions import generate_descriptions
 from dalle.dalle import preload_images
 
+DEFAULT_MAP_GEN_CONFIG_FILE = "map_gen_config.json"
+
 
 def save_mapgenconfig(config, file_path):
     with open(file_path, 'w') as f:
@@ -38,9 +40,8 @@ class CacheFiller:
     def __init__(self):
         self.names = []
 
-    def cache_image_and_text(self, biome, image):
-        asset_name = biome.name + "_" + image
-        self.names.append("A " + image + " in the " + biome.name)
+    def cache_image_and_text(self, biome: Biome, image):
+        self.names.append(biome.format_name(image))
 
     def cache_image_and_text_for_config(self, config):
         for biome in config.biomes:
@@ -67,8 +68,8 @@ class CacheFiller:
 if __name__ == "__main__":
     gen_data = MapGenConfig()
     b1 = Biome("Forest")
-    b1.tree_density = 0.7
-    b1.water_density = 0.15
+    b1.tree_level = 0.7
+    b1.water_level = 0.15
     b1.rock_density = 0.05
     b1.monster_types = ["goblin", "orc", "troll", "giant spider", "giant rat", "bat", "wolf", "elf", "velociraptor", "centipede"]
     b1.object_types = ["gemstones", "hut", "eyestalk", "great pyramid", "crypt entrance", "cave entrance", "bird house", "tree house", "well", "fountain", "statue", "grave"]
@@ -80,10 +81,10 @@ if __name__ == "__main__":
     gen_data.biomes.append(b1)
 
     # Save to file
-    save_mapgenconfig(gen_data, "test_config.json")
+    save_mapgenconfig(gen_data, "map_gen_config.json")
 
     # Load from file
-    gen_data = load_mapgenconfig("test_config.json")
+    gen_data = load_mapgenconfig("map_gen_config.json")
 
     # Cache filler
     filler = CacheFiller()

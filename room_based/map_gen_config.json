@@ -58,8 +58,8 @@
                 "brick wall",
                 "cobblestone wall"
             ],
-            "tree_density": 0.7,
-            "water_density": 0.15,
+            "tree_level": 0.7,
+            "water_level": 0.15,
             "rock_density": 0.05
         }
     ]
