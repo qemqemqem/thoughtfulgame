@@ -1,8 +1,8 @@
 import openai
 import threading
 import os
-from file_cache_manager import StringCache, DEFAULT_CACHE_FILE_NAME
-from gpt import *
+from gpt.file_cache_manager import StringCache, DEFAULT_CACHE_FILE_NAME
+from gpt.gpt import *
 
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -10,7 +10,7 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 # Set up the OpenAI model to use for generating descriptions
 # model_engine = "text-davinci-003"
 
-def generate_descriptions(strings, cache_file):
+def generate_descriptions(strings, cache_file=DEFAULT_CACHE_FILE_NAME):
     # Create a StringCache object to cache the descriptions
     cache = StringCache(cache_file)
 
@@ -47,6 +47,7 @@ def generate_descriptions(strings, cache_file):
 
     # Save the cache to file
     cache.save_cache()
+
 
 if __name__ == "__main__":
     # TODO(cleanup): This file name cleaning is duplicated in main.py

@@ -90,10 +90,9 @@ def generate_and_save_images(prompt_list, convert_alpha = True, suffix_text="Whi
         #     f.write(image_bytes)
 
 
-def preload_images_from_cache():
-    from gpt.file_cache_manager import StringCache
-    str_cache = StringCache(cache_file="../gpt/cache.json")
-    things = list(str_cache.cache.keys())
+def preload_images(things):
+    # Don't waste time generating images for things which already exist
+    things = [th for th in things if not os.path.exists(f"../images/generated/{th}.png")]
 
     # Split the list into chunks of 50, because the API has a rate limit of 50 requests per second
     chunk_size = 50
@@ -101,7 +100,15 @@ def preload_images_from_cache():
     for chunk in chunks:
         generate_and_save_images(chunk, convert_alpha=True)
         # Sleep for 1 minute
-        time.sleep(60)
+        if chunk != chunks[-1]:
+            time.sleep(60)
+
+
+def preload_images_from_cache():
+    from gpt.file_cache_manager import StringCache
+    str_cache = StringCache(cache_file="../gpt/cache.json")
+    things = list(str_cache.cache.keys())
+    preload_images(things)
 
 
 if __name__ == "__main__":

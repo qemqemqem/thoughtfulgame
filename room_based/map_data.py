@@ -1,5 +1,6 @@
 # DON'T DEPEND ON ANY NON-DATA FILES FROM HERE
 import random
+import json
 
 from room_based.thought_data import ThoughtBrain
 from utils.vec2i import Vec2i
@@ -45,11 +46,36 @@ class InanimateObject:
         self.description = ""
 
 
+class Biome:
+    def __init__(self, name):
+        self.name = name
+        self.monster_types: list[str] = []
+        self.object_types: list[str] = []
+        self.tree_images: list[str] = []
+        self.rock_images: list[str] = []
+        self.ground_images: list[str] = []
+        self.water_images: list[str] = []
+        self.wall_images: list[str] = []
+        self.tree_density: float = 0.3
+        self.water_density: float = 0.15
+        self.rock_density: float = 0.05
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+            sort_keys=True, indent=4)
+
+
+class MapGenConfig:
+    def __init__(self):
+        self.biomes: list[Biome] = []
+
+
 class Room:
-    def __init__(self, width, height):
+    def __init__(self, width, height, biome: Biome = None):
         self.tile_map = None
         self.characters: list[Character] = []
         self.things: list[InanimateObject] = []
+        self.biome = biome
         self.width = width
         self.height = height
         self.room_pos = None
