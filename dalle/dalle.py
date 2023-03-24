@@ -1,5 +1,6 @@
 import openai
 import os
+import time
 import requests
 import pygame
 from io import BytesIO
@@ -26,6 +27,7 @@ def generate_images(prompt_list, suffix_text="White background."):
         thread = threading.Thread(target=generate_image, args=(prompt,))
         thread.start()
         threads.append(thread)
+        # Note that there's a rate limit of 50 requests per second
 
     for thread in threads:
         thread.join()
@@ -88,7 +90,26 @@ def generate_and_save_images(prompt_list, convert_alpha = True, suffix_text="Whi
         #     f.write(image_bytes)
 
 
+def preload_images_from_cache():
+    from gpt.file_cache_manager import StringCache
+    str_cache = StringCache(cache_file="../gpt/cache.json")
+    things = list(str_cache.cache.keys())
+
+    # Split the list into chunks of 50, because the API has a rate limit of 50 requests per second
+    chunk_size = 50
+    chunks = [things[i:i + chunk_size] for i in range(0, len(things), chunk_size)]
+    for chunk in chunks:
+        generate_and_save_images(chunk, convert_alpha=True)
+        # Sleep for 1 minute
+        time.sleep(60)
+
+
 if __name__ == "__main__":
-    unit_prompt_list = ["happy wizard", "sad wizard", "angry wizard", "duck wizard", "potato wizard"]
-    tile_prompt_list = ["tree", "rock", "water", "grass", "sand", "lava", "bridge", "door", "stairs", "chest", "sign", "torch", "fence", "wall", "house", "castle", "cave", "bridge"]
-    generate_and_save_images(tile_prompt_list, convert_alpha=True)  # , suffix_text="Fully colored in background.")
+    # unit_prompt_list = ["happy wizard", "sad wizard", "angry wizard", "duck wizard", "potato wizard"]
+    # tile_prompt_list = ["tree", "rock", "water", "grass", "sand", "lava", "bridge", "door", "stairs", "chest", "sign", "torch", "fence", "wall", "house", "castle", "cave", "bridge"]
+    # # Unit prompts
+    # tile_prompt_list.extend(["goblin", "elf", "human", "dwarf", "orc", "dragon", "giant", "troll", "golem", "skeleton", "zombie", "ghost", "vampire", "werewolf", "demon", "angel", "unicorn"])
+    # # Exotic prompts
+    # tile_prompt_list.extend(["ancient arch", "imposing statue", "dark throne", "enchanted fountain", "mysterious portal", "magical tree", "enchanted forest", "enchanted castle", "enchanted cave", "enchanted bridge", "enchanted door", "enchanted stairs", "enchanted chest", "strange runes", "dragon egg", "handwritten letter", "mysterious object", "spellbook", "deck of cards"])
+    # generate_and_save_images(tile_prompt_list, convert_alpha=True)  # , suffix_text="Fully colored in background.")
+    preload_images_from_cache()

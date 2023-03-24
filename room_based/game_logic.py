@@ -2,15 +2,15 @@ import random
 
 import pygame
 
-from location_utils import move_character, is_character_in_doorway
-from map_gen import initialize_room_and_neighbors
-from map_data import *
+from room_based.location_utils import move_character, is_character_in_doorway
+from room_based.map_gen import initialize_room_and_neighbors
+from room_based.map_data import *
 from room_based.think_gen import generate_thoughts
 
 
 class Game:
     PLAYER_SPEED = 0.2
-    NPC_SPEED = 0.15
+    NPC_SPEED = 0.1
 
     def __init__(self, map_data, current_room):
         self.map_data: MapData = map_data
@@ -53,8 +53,9 @@ class Game:
 
         for npc in self.npcs:
             # Change the NPC's direction randomly
-            dx = random.uniform(-1, 1) * 1
-            dy = random.uniform(-1, 1) * 1
+            NPC_DIRECTION_CHANGE_MAGNITUDE = 0.2
+            dx = random.uniform(-1, 1) * NPC_DIRECTION_CHANGE_MAGNITUDE
+            dy = random.uniform(-1, 1) * NPC_DIRECTION_CHANGE_MAGNITUDE
             npc.vx += dx
             npc.vy += dy
             length = (npc.vx ** 2 + npc.vy ** 2) ** 0.5

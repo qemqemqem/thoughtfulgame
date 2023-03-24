@@ -4,8 +4,8 @@ from noise import snoise2  # You need to install the noise module
 
 from gpt.file_cache_manager import StringCache
 from room_based.location_utils import *
-from map_data import *
-from location_utils import *
+from room_based.map_data import *
+from room_based.location_utils import *
 from gpt.gpt import *
 
 string_cache = StringCache(cache_file="../gpt/cache.json")

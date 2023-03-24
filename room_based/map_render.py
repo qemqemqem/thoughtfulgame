@@ -5,6 +5,8 @@ from room_based.game_logic import Game
 from room_based.map_data import Room
 from utils.pygame_writer import PygameWriter
 
+IMAGES_FOLDER = "../images/generated"
+
 
 class TileMapRenderer:
     TILE_SIZE = 32
@@ -14,10 +16,10 @@ class TileMapRenderer:
         self.images = {}
 
         # Load tile images from the 'images' folder
-        for filename in os.listdir("../images"):
+        for filename in os.listdir(IMAGES_FOLDER):
             name, extension = os.path.splitext(filename)
             if extension == ".png":
-                image_path = os.path.join("../images", filename)
+                image_path = os.path.join(IMAGES_FOLDER, filename)
                 image = pygame.image.load(image_path).convert_alpha()
                 image = pygame.transform.scale(image, (self.TILE_SIZE, self.TILE_SIZE))
                 self.images[name.replace("-", " ")] = image

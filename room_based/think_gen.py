@@ -1,8 +1,8 @@
 import threading
 
 from gpt.gpt import *
-from thought_data import *
-from map_data import *
+from room_based.thought_data import *
+from room_based.map_data import *
 
 
 def _thought_gen_helper(character: Character, room: Room, num_thoughts=3):

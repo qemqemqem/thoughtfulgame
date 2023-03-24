@@ -1,13 +1,13 @@
 import pygame
 import random
 
-from map_data import *
-from map_render import TileMapRenderer
-from game_logic import Game
-from map_gen import initialize_room_and_neighbors
-from game_loop import main_game_loop
+from room_based.map_data import *
+from room_based.map_render import TileMapRenderer
+from room_based.game_logic import Game
+from room_based.map_gen import initialize_room_and_neighbors
+from room_based.game_loop import main_game_loop
 from utils.pygame_writer import PygameWriter
-from think_gen import generate_thoughts
+from room_based.think_gen import generate_thoughts
 
 # Room dimensions, needed to initialize pygame
 width = 30
