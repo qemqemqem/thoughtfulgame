@@ -37,7 +37,7 @@ class TileMapGenerator:
         # Place trees randomly
         for y in range(self.height):
             for x in range(self.width):
-                if tile_map[y][x].type == GRASS and abs(tree_map[y][x]) > forest_level and random.random() < tree_density:
+                if tile_map[y][x].type == GRASS and abs(tree_map[y][x]) < forest_level and random.random() < tree_density:
                     tile_map[y][x] = Tile(TREE, room.biome.format_name(random.choice(self.room.biome.tree_images)))
 
         # Place walls randomly

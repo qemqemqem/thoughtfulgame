@@ -71,9 +71,11 @@ class CacheFiller:
 
 if __name__ == "__main__":
     gen_data = MapGenConfig()
+
+    # Forest biome
     b1 = Biome("Forest")
-    b1.tree_level = 0.7
-    b1.water_level = 0.15
+    b1.tree_level = 0.25
+    b1.water_level = -0.4
     b1.rock_density = 0.05
     b1.monster_types = ["goblin", "orc", "troll", "giant spider", "giant rat", "bat", "wolf", "elf", "velociraptor", "centipede"]
     b1.object_types = ["gemstones", "hut", "eyestalk", "great pyramid", "crypt entrance", "cave entrance", "bird house", "tree house", "well", "fountain", "statue", "grave"]
@@ -83,6 +85,20 @@ if __name__ == "__main__":
     b1.water_images = ["still water", "stagnant water", "swamp water"]
     b1.wall_images = ["wooden wall", "stone wall", "brick wall", "cobblestone wall"]
     gen_data.biomes.append(b1)
+
+    # Desert biome
+    b2 = Biome("Desert")
+    b2.tree_level = -0.4
+    b2.water_level = -0.5
+    b2.rock_density = 0.4
+    b2.monster_types = ["giant scorpion", "fox", "rock monster", "giant lizard", "dust storm"]
+    b2.object_types = ["pillar", "pyramid", "canyon", "ruins", "cave entrance", "ancient statue", "oasis"]
+    b2.tree_images = ["cactus"]
+    b2.rock_images = ["boulder", "rock", "crystal"]
+    b2.ground_images = ["sand", "dirt", "piles of sand"]
+    b2.water_images = ["precious water"]
+    b2.wall_images = ["stone wall", "brick wall", "cobblestone wall"]
+    gen_data.biomes.append(b2)
 
     # Save to file
     save_mapgenconfig(gen_data, "map_gen_config.json")

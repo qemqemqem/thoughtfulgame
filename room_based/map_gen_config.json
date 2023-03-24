@@ -58,9 +58,52 @@
                 "brick wall",
                 "cobblestone wall"
             ],
-            "tree_level": 0.7,
-            "water_level": 0.15,
+            "tree_level": 0.25,
+            "water_level": -0.4,
             "rock_density": 0.05
+        },
+        {
+            "name": "Desert",
+            "monster_types": [
+                "giant scorpion",
+                "fox",
+                "rock monster",
+                "giant lizard",
+                "dust storm"
+            ],
+            "object_types": [
+                "pillar",
+                "pyramid",
+                "canyon",
+                "ruins",
+                "cave entrance",
+                "ancient statue",
+                "oasis"
+            ],
+            "tree_images": [
+                "cactus"
+            ],
+            "rock_images": [
+                "boulder",
+                "rock",
+                "crystal"
+            ],
+            "ground_images": [
+                "sand",
+                "dirt",
+                "piles of sand"
+            ],
+            "water_images": [
+                "precious water"
+            ],
+            "wall_images": [
+                "stone wall",
+                "brick wall",
+                "cobblestone wall"
+            ],
+            "tree_level": -0.4,
+            "water_level": -0.5,
+            "rock_density": 0.4
         }
     ]
 }
