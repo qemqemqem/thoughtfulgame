@@ -55,6 +55,10 @@ class CacheFiller:
                 self.cache_image_and_text(biome, image)
             for image in biome.wall_images:
                 self.cache_image_and_text(biome, image)
+            for ch in biome.monster_types:
+                self.cache_image_and_text(biome, ch)
+            for it in biome.object_types:
+                self.cache_image_and_text(biome, it)
         self.preload_descriptions()
         self.preload_images()
 

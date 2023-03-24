@@ -81,7 +81,9 @@ class TileMapGenerator:
             if east_exit is None or (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
                 tile_map[y][width - 1] = Tile(wall_type)
 
-    def generate_characters(self, room, num_characters=5, character_types=("elf", "goblin", "human")):
+    def generate_characters(self, room: Room, num_characters=5, character_types=None):
+        if character_types is None:
+            character_types = [room.biome.format_name(ch) for ch in room.biome.monster_types]
         characters = []
         for _ in range(num_characters):
             character_type = random.choice(character_types)
@@ -100,7 +102,7 @@ class TileMapGenerator:
 
     def generate_items(self, room, num_items=5, item_types=None):
         if item_types is None:
-            item_types = list(string_cache.cache.keys())
+            item_types = [room.biome.format_name(it) for it in room.biome.object_types]
         items = []
         for _ in range(num_items):
             item_type = random.choice(item_types)
@@ -145,8 +147,7 @@ def initialize_new_room(room: Room, map_data):
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level, forest_level=room.biome.tree_level, tree_density=0.9, wall_density=0.0, rock_density=room.biome.rock_density)
     map_generator.wall_in_map(room.tile_map, WALL, room)
-    room.characters = map_generator.generate_characters(room, num_characters=5,
-                                                        character_types=("elf", "goblin", "human"))
+    room.characters = map_generator.generate_characters(room, num_characters=5)
     room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
     t = threading.Thread(target=_room_description_helper, args=(room, map_data))
     t.start()
