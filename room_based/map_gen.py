@@ -21,7 +21,7 @@ class TileMapGenerator:
 
     def generate_map(self, room: Room, water_level=0.1, tree_density=0.9, wall_density=0.05, rock_density=0.1, forest_level=.4):
         # Initialize the map with grass tiles
-        tile_map = [[Tile(GRASS) for _ in range(self.width)] for _ in range(self.height)]
+        tile_map = [[Tile(GRASS, room.biome.format_name(random.choice(room.biome.ground_images))) for _ in range(self.width)] for _ in range(self.height)]
 
         # Generate the Perlin noise map for water placement
         water_map = [[snoise2((self.room.room_pos.x*self.room.width+x) / self.water_scale, (-self.room.room_pos.y*self.room.height+y) / self.water_scale, octaves=4, persistence=0.5, lacunarity=2, base=1089234) for x in range(self.width)] for y in range(self.height)]
@@ -54,32 +54,32 @@ class TileMapGenerator:
 
         return tile_map
 
-    def wall_in_map(self, tile_map, wall_type=WALL, room=None, north_exit=None, east_exit=None, south_exit=None, west_exit=None, north_door_size=1, east_door_size=1, south_door_size=1, west_door_size=1):
+    def wall_in_map(self, room: Room, tile_map, wall_type=WALL, north_exit=None, east_exit=None, south_exit=None, west_exit=None, north_door_size=1, east_door_size=1, south_door_size=1, west_door_size=1):
         width = len(tile_map[0])
         height = len(tile_map)
-        if room is not None:
-            north_exit = room.north_exit
-            east_exit = room.east_exit
-            south_exit = room.south_exit
-            west_exit = room.west_exit
-            north_door_size = room.north_door_size
-            east_door_size = room.east_door_size
-            south_door_size = room.south_door_size
-            west_door_size = room.west_door_size
+
+        north_exit = room.north_exit
+        east_exit = room.east_exit
+        south_exit = room.south_exit
+        west_exit = room.west_exit
+        north_door_size = room.north_door_size
+        east_door_size = room.east_door_size
+        south_door_size = room.south_door_size
+        west_door_size = room.west_door_size
 
         for x in range(width):
             # Add north and south walls
             if north_exit is None or (x < north_exit - north_door_size / 2 or x >= north_exit + north_door_size / 2):
-                tile_map[0][x] = Tile(wall_type)
+                tile_map[0][x] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
             if south_exit is None or (x < south_exit - south_door_size / 2 or x >= south_exit + south_door_size / 2):
-                tile_map[height - 1][x] = Tile(wall_type)
+                tile_map[height - 1][x] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
 
         for y in range(height):
             # Add east and west walls
             if west_exit is None or (y < west_exit - west_door_size / 2 or y >= west_exit + west_door_size / 2):
-                tile_map[y][0] = Tile(wall_type)
+                tile_map[y][0] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
             if east_exit is None or (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
-                tile_map[y][width - 1] = Tile(wall_type)
+                tile_map[y][width - 1] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
 
     def generate_characters(self, room: Room, num_characters=5, character_types=None):
         if character_types is None:
@@ -146,7 +146,7 @@ def initialize_new_room(room: Room, map_data):
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level, forest_level=room.biome.tree_level, tree_density=0.9, wall_density=0.0, rock_density=room.biome.rock_density)
-    map_generator.wall_in_map(room.tile_map, WALL, room)
+    # map_generator.wall_in_map(room, room.tile_map, WALL)
     room.characters = map_generator.generate_characters(room, num_characters=5)
     room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
     t = threading.Thread(target=_room_description_helper, args=(room, map_data))

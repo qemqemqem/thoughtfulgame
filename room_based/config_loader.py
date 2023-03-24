@@ -100,6 +100,20 @@ if __name__ == "__main__":
     b2.wall_images = ["stone wall", "brick wall", "cobblestone wall"]
     gen_data.biomes.append(b2)
 
+    # Arctic biome
+    b3 = Biome("Arctic")
+    b3.tree_level = -0.4
+    b3.water_level = 0.2
+    b3.rock_density = 0.2
+    b3.monster_types = ["polar bear", "ice monster", "seal", "ice troll"]
+    b3.object_types = ["ice pillar", "ice cave", "ice hut", "ice pyramid", "ice ruins", "ice statue"]
+    b3.tree_images = ["frozen tree"]
+    b3.rock_images = ["sheer outcropping", "icy rock", "ice crystal"]
+    b3.ground_images = ["snow", "ice", "iceberg"]
+    b3.water_images = ["cold water"]
+    b3.wall_images = ["ice wall"]
+    gen_data.biomes.append(b3)
+
     # Save to file
     save_mapgenconfig(gen_data, "map_gen_config.json")
 

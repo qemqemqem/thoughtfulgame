@@ -104,6 +104,45 @@
             "tree_level": -0.4,
             "water_level": -0.5,
             "rock_density": 0.4
+        },
+        {
+            "name": "Arctic",
+            "monster_types": [
+                "polar bear",
+                "ice monster",
+                "seal",
+                "ice troll"
+            ],
+            "object_types": [
+                "ice pillar",
+                "ice cave",
+                "ice hut",
+                "ice pyramid",
+                "ice ruins",
+                "ice statue"
+            ],
+            "tree_images": [
+                "frozen tree"
+            ],
+            "rock_images": [
+                "sheer outcropping",
+                "icy rock",
+                "ice crystal"
+            ],
+            "ground_images": [
+                "snow",
+                "ice",
+                "iceberg"
+            ],
+            "water_images": [
+                "cold water"
+            ],
+            "wall_images": [
+                "ice wall"
+            ],
+            "tree_level": -0.4,
+            "water_level": 0.2,
+            "rock_density": 0.2
         }
     ]
 }
