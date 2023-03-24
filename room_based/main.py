@@ -8,7 +8,7 @@ from room_based.map_gen import initialize_room_and_neighbors
 from room_based.game_loop import main_game_loop
 from utils.pygame_writer import PygameWriter
 from room_based.think_gen import generate_thoughts
-from room_based.config_loader import load_mapgenconfig, DEFAULT_MAP_GEN_CONFIG_FILE
+from room_based.config_loader import get_map_gen_config
 
 # Room dimensions, needed to initialize pygame
 width = 30
@@ -22,7 +22,7 @@ screen = pygame.display.set_mode((width * tile_size, height * tile_size + writer
 pygame.display.set_caption("Tile Map Renderer")
 
 # Generation
-map_gen_config = load_mapgenconfig(DEFAULT_MAP_GEN_CONFIG_FILE)
+map_gen_config = get_map_gen_config()
 player = PlayerData()
 map_data = MapData(map_gen_config, width, height)
 room, _ = map_data.get_room(player.room_pos)

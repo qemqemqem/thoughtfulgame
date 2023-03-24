@@ -69,7 +69,7 @@ class CacheFiller:
         preload_images(self.names)
 
 
-if __name__ == "__main__":
+def get_map_gen_config():
     gen_data = MapGenConfig()
 
     # Forest biome
@@ -77,8 +77,10 @@ if __name__ == "__main__":
     b1.tree_level = 0.25
     b1.water_level = -0.4
     b1.rock_density = 0.05
-    b1.monster_types = ["goblin", "orc", "troll", "giant spider", "giant rat", "bat", "wolf", "elf", "velociraptor", "centipede"]
-    b1.object_types = ["gemstones", "hut", "eyestalk", "great pyramid", "crypt entrance", "cave entrance", "bird house", "tree house", "well", "fountain", "statue", "grave"]
+    b1.monster_types = ["goblin", "orc", "troll", "giant spider", "giant rat", "bat", "wolf", "elf", "velociraptor",
+                        "centipede"]
+    b1.object_types = ["gemstones", "hut", "eyestalk", "great pyramid", "crypt entrance", "cave entrance", "bird house",
+                       "tree house", "well", "fountain", "statue", "grave"]
     b1.tree_images = ["gnarled tree", "acorn tree", "yew tree", "fruit tree", "oak tree", "beech tree"]
     b1.rock_images = ["boulder", "rock", "stone"]
     b1.ground_images = ["grass", "dirt", "fallen leaves", "moss"]
@@ -113,6 +115,12 @@ if __name__ == "__main__":
     b3.water_images = ["cold water"]
     b3.wall_images = ["ice wall"]
     gen_data.biomes.append(b3)
+
+    return gen_data
+
+
+if __name__ == "__main__":
+    gen_data = get_map_gen_config()
 
     # Save to file
     save_mapgenconfig(gen_data, "map_gen_config.json")
