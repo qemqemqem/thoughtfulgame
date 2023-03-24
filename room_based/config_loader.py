@@ -83,7 +83,7 @@ if __name__ == "__main__":
     b1.rock_images = ["boulder", "rock", "stone"]
     b1.ground_images = ["grass", "dirt", "fallen leaves", "moss"]
     b1.water_images = ["still water", "stagnant water", "swamp water"]
-    b1.wall_images = ["wooden wall", "stone wall", "brick wall", "cobblestone wall"]
+    b1.wall_images = ["wooden wall"]
     gen_data.biomes.append(b1)
 
     # Desert biome
@@ -97,13 +97,13 @@ if __name__ == "__main__":
     b2.rock_images = ["boulder", "rock", "crystal"]
     b2.ground_images = ["sand", "dirt", "piles of sand"]
     b2.water_images = ["precious water"]
-    b2.wall_images = ["stone wall", "brick wall", "cobblestone wall"]
+    b2.wall_images = ["brick wall"]
     gen_data.biomes.append(b2)
 
     # Arctic biome
     b3 = Biome("Arctic")
     b3.tree_level = -0.4
-    b3.water_level = 0.2
+    b3.water_level = -0.1
     b3.rock_density = 0.2
     b3.monster_types = ["polar bear", "ice monster", "seal", "ice troll"]
     b3.object_types = ["ice pillar", "ice cave", "ice hut", "ice pyramid", "ice ruins", "ice statue"]

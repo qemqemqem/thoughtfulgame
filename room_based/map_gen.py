@@ -146,7 +146,7 @@ def initialize_new_room(room: Room, map_data):
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
     room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level, forest_level=room.biome.tree_level, tree_density=0.9, wall_density=0.0, rock_density=room.biome.rock_density)
-    # map_generator.wall_in_map(room, room.tile_map, WALL)
+    map_generator.wall_in_map(room, room.tile_map, WALL)
     room.characters = map_generator.generate_characters(room, num_characters=5)
     room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
     t = threading.Thread(target=_room_description_helper, args=(room, map_data))

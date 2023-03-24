@@ -53,10 +53,7 @@
                 "swamp water"
             ],
             "wall_images": [
-                "wooden wall",
-                "stone wall",
-                "brick wall",
-                "cobblestone wall"
+                "wooden wall"
             ],
             "tree_level": 0.25,
             "water_level": -0.4,
@@ -97,9 +94,7 @@
                 "precious water"
             ],
             "wall_images": [
-                "stone wall",
-                "brick wall",
-                "cobblestone wall"
+                "brick wall"
             ],
             "tree_level": -0.4,
             "water_level": -0.5,
@@ -141,7 +136,7 @@
                 "ice wall"
             ],
             "tree_level": -0.4,
-            "water_level": 0.2,
+            "water_level": -0.1,
             "rock_density": 0.2
         }
     ]
