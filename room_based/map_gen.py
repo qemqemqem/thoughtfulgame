@@ -12,23 +12,21 @@ string_cache = StringCache(cache_file="../gpt/cache.json")
 
 class TileMapGenerator:
     def __init__(self, room, seed=None):
-        self.room = room
-        self.width = room.width
-        self.height = room.height
+        self.room: Room = room
+        self.width: int = room.width
+        self.height: int = room.height
         self.seed = seed if seed is not None else random.randint(0, 65535)
-        self.water_scale = 100
-        self.tree_scale = 50
+        self.water_scale: int = 100
+        self.tree_scale: int = 50
 
     def generate_map(self, water_level=0.1, tree_density=0.9, wall_density=0.05, rock_density=0.1, forest_level=.4):
         # Initialize the map with grass tiles
         tile_map = [[Tile(GRASS) for _ in range(self.width)] for _ in range(self.height)]
 
         # Generate the Perlin noise map for water placement
-        water_map = [[snoise2((self.room.room_pos.x*30+x) / self.water_scale, (-self.room.room_pos.y*20+y) / self.water_scale, octaves=4, persistence=0.5, lacunarity=2, base=1089234)
-                      for x in range(self.width)] for y in range(self.height)]
+        water_map = [[snoise2((self.room.room_pos.x*self.room.width+x) / self.water_scale, (-self.room.room_pos.y*self.room.height+y) / self.water_scale, octaves=4, persistence=0.5, lacunarity=2, base=1089234) for x in range(self.width)] for y in range(self.height)]
 
-        tree_map = [[snoise2((self.room.room_pos.x*30+x-987141) / self.tree_scale, (-self.room.room_pos.y*20+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234)
-                      for x in range(self.width)] for y in range(self.height)]
+        tree_map = [[snoise2((self.room.room_pos.x*self.room.width+x-987141) / self.tree_scale, (-self.room.room_pos.y*self.room.height+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234) for x in range(self.width)] for y in range(self.height)]
 
         # Place water tiles based on the water map
         for y in range(self.height):

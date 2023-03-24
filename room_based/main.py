@@ -10,9 +10,9 @@ from utils.pygame_writer import PygameWriter
 from think_gen import generate_thoughts
 
 # Room dimensions, needed to initialize pygame
-width = 64
-height = 32
-tile_size = 16
+width = 30
+height = 20
+tile_size = 32
 
 # Initialize pygame first because it's used to load images
 pygame.init()
