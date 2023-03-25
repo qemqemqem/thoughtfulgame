@@ -19,9 +19,9 @@ def _thought_gen_helper(character: Character, room: Room, num_thoughts=3):
     character.thought_brain.current_thought_options = [Thought(t, perceptions=[prompt]) for t in thoughts]
 
 
-def _specific_thought_gen_helper(character: Character, prompt: str, thought_topic: ThoughtTopic, index: int):
+def _specific_thought_gen_helper(character: Character, prompt: str, thought_topic: ThoughtTopic):
     thoughts = prompt_completion_chat(prompt, n=1, temperature=0.8)
-    character.thought_brain.current_thought_options[index] = Thought(thoughts, perceptions=[prompt], topic=thought_topic)
+    character.thought_brain.add_thought_option(Thought(thoughts, perceptions=[prompt], topic=thought_topic))
 
 
 def generate_specific_thoughts(character: Character, room: Room, num_thoughts=3):
@@ -36,7 +36,7 @@ def generate_specific_thoughts(character: Character, room: Room, num_thoughts=3)
         if ch.type not in dedup:
             dedup.append(ch.type)
             thought_topics.append(ThoughtTopic(random.choice(possible_moods), ch))
-    for i, th in enumerate(thought_topics[:num_thoughts]):
+    for th in thought_topics[:num_thoughts]:
         prompt = "You are a brave adventurer, a " + character.type + ".\n"
         prompt += "You have arrived in a place with " + room.landscape_description + ".\nIt contains these things:\n"
         dedup = []
@@ -46,7 +46,7 @@ def generate_specific_thoughts(character: Character, room: Room, num_thoughts=3)
                 prompt += " * " + thing.type + ": " + thing.description + "\n"
         prompt += "\nYou are feeling " + th.mood + " about the " + th.target.type + ".\n"
         prompt += "\nPlease write a short one sentence thought that a brave adventurer might have about the " + th.target.type + "."
-        t = threading.Thread(target=_specific_thought_gen_helper, args=(character, prompt, th, i))
+        t = threading.Thread(target=_specific_thought_gen_helper, args=(character, prompt, th))
         t.start()
 
 
@@ -54,3 +54,7 @@ def generate_thoughts(character: Character, room: Room, num_thoughts=3):
     # t = threading.Thread(target=_thought_gen_helper, args=(character, room, num_thoughts))
     # t.start()
     generate_specific_thoughts(character, room, num_thoughts)
+
+def update_thought_timers(character: Character):
+    for thought in character.thought_brain.thought_history:
+        thought.time_start += 1
