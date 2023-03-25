@@ -12,7 +12,7 @@ def test_prompt_completion():
 
 
 def test_room_description():
-    dsc = "Here are the details of a place.\nThe place is a grassy plane with many trees.\nThese are the things in the place:\n * 3 goblins\n * an old shrine\n * a ruined building\n\nPlease write one sentence of description of the place in the style of JRR Tolkien:\n"
+    dsc = "Here are the details of a place.\nThe place is a grassy plane with many trees.\nThese are the things in the place:\n * 3 goblins\n * an old shrine\n * a ruined building\n\nPlease write one sentence of description of the place in the humorous style of Piers Anthony:\n"
     answers = prompt_completion_chat(dsc, n=3, temperature=0.9)
     for answer in answers:
         print("ANSWER:")
