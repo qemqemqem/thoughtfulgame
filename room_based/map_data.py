@@ -126,6 +126,8 @@ class Room:
                 nearby_characters.append(character)
         nearby_things = []
         for thing in self.things:
+            if not thing.interesting:
+                continue
             if abs(thing.x - x) <= distance and abs(thing.y - y) <= distance:
                 nearby_things.append(thing)
         return nearby_characters, nearby_things
