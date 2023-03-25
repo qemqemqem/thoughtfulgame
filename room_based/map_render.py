@@ -65,22 +65,32 @@ class TileMapRenderer:
         screen.blit(image, rect)
 
         # Text about the thing
-        text = [subject.type.capitalize(), "", subject.description]
+        if is_player:
+            text = [
+                "You are a " + subject.type.capitalize() + " in the " + game.room.biome.name.capitalize(),
+                "",
+                game.room.description
+            ]
+        else:
+            text = [
+                subject.type.capitalize(),
+                "",
+                subject.description
+            ]
         self.writer.write_break_long_lines(text, screen, top_left=(game.room.width * self.TILE_SIZE + self.writer.buffer_size, self.extra_space_on_right + self.writer.buffer_size))
 
     def render_descriptions(self, screen, game: Game):
         room: Room = game.room
         text = []
-        text.append(room.description)
-        text.append("")
         for i in range(len(game.player.thought_brain.current_thought_options)):
             text.append(f"{'ABCDEFGH'[i]}) {game.player.thought_brain.current_thought_options[i].text}")
+            text.append("")
         text.append("")
-        text.append("Nearby:")
+        # text.append("Nearby:")
         chars, things = room.get_nearby(game.player.x, game.player.y, distance=3)
         self.render_portrait(screen, game, chars, things)
-        for thing in things:
-            text.append(" * " + thing.type + ", " + thing.description)
-        for character in chars:
-            text.append(" * " + character.type + ", " + character.description)
-        self.writer.write_break_long_lines(text, screen, top_left=(0, room.height * self.TILE_SIZE))
+        # for thing in things:
+        #     text.append(" * " + thing.type + ", " + thing.description)
+        # for character in chars:
+        #     text.append(" * " + character.type + ", " + character.description)
+        self.writer.write_break_long_lines(text, screen, top_left=(self.writer.buffer_size, room.height * self.TILE_SIZE + self.writer.buffer_size))

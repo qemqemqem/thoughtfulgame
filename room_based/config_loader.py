@@ -109,7 +109,7 @@ def get_map_gen_config():
     b3.tree_level = -0.4
     b3.water_level = -0.1
     b3.rock_density = 0.2
-    b3.monster_types = ["polar bear", "ice monster", "seal", "ice troll"]
+    b3.monster_types = ["sea dragon", "polar bear", "ice monster", "seal", "ice troll"]
     b3.object_types = ["ice pillar", "ice cave", "ice hut", "ice pyramid", "ice ruins", "ice statue"]
     b3.tree_images = ["frozen tree"]
     b3.rock_images = ["sheer outcropping", "icy rock", "ice crystal"]
