@@ -2,25 +2,28 @@ from gtts import gTTS
 import pygame
 import threading
 import os
+import tempfile
 
 def _speak(text):
     # Create a gTTS object and specify the language
     tts = gTTS(text, lang='en')
 
-    file_name = "output" + str(hash(text)) + ".mp3"
+    # Save the audio data to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False) as f:
+        tts.write_to_fp(f)
+        file_name = f.name
 
-    # Save the audio file
-    tts.save(file_name)
-
-    # Load the audio file with pygame
+    # Load the audio data from the temporary file with pygame
     pygame.mixer.init()
     pygame.mixer.music.load(file_name)
 
-    # Delete the file
-    os.remove(file_name)
-
-    # Play the audio file
+    # Play the audio data from memory
     pygame.mixer.music.play()
+
+    # Delete the temporary file
+    # TODO This does not work in Windows
+    # os.remove(file_name)
+
 
 def speak(text):
     # Create a thread to run the _speak function
