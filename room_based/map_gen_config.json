@@ -62,10 +62,15 @@
                 "stone"
             ],
             "ground_images": [
-                "grass"
+                "grass",
+                "dirt",
+                "fallen leaves",
+                "moss"
             ],
             "water_images": [
-                "still water"
+                "still water",
+                "stagnant water",
+                "swamp water"
             ],
             "wall_images": [
                 "wooden wall"
@@ -90,7 +95,8 @@
                 "ruins",
                 "cave entrance",
                 "ancient statue",
-                "oasis"
+                "oasis",
+                "mirage"
             ],
             "tree_images": [
                 "cactus"
@@ -101,10 +107,13 @@
                 "crystal"
             ],
             "ground_images": [
-                "sand"
+                "sand",
+                "dirt",
+                "piles of sand"
             ],
             "water_images": [
-                "precious water"
+                "precious water",
+                "swirling water"
             ],
             "wall_images": [
                 "brick wall"
@@ -139,13 +148,17 @@
                 "ice crystal"
             ],
             "ground_images": [
-                "snow"
+                "snow",
+                "ice",
+                "ice floe"
             ],
             "water_images": [
-                "cold water"
+                "cold water",
+                "still water"
             ],
             "wall_images": [
-                "ice wall"
+                "ice wall",
+                "crystalline wall"
             ],
             "tree_level": -0.4,
             "water_level": -0.1,

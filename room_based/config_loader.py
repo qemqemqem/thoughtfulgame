@@ -97,11 +97,11 @@ def get_map_gen_config():
     b2.water_level = -0.5
     b2.rock_density = 0.4
     b2.monster_types = ["giant scorpion", "fox", "rock monster", "giant lizard", "dust storm"]
-    b2.object_types = ["pillar", "pyramid", "canyon", "ruins", "cave entrance", "ancient statue", "oasis"]
+    b2.object_types = ["pillar", "pyramid", "canyon", "ruins", "cave entrance", "ancient statue", "oasis", "mirage"]
     b2.tree_images = ["cactus"]
     b2.rock_images = ["boulder", "rock", "crystal"]
     b2.ground_images = ["sand", "dirt", "piles of sand"]
-    b2.water_images = ["precious water"]
+    b2.water_images = ["precious water", "swirling water"]
     b2.wall_images = ["brick wall"]
     gen_data.biomes.append(b2)
 
@@ -114,9 +114,9 @@ def get_map_gen_config():
     b3.object_types = ["ice pillar", "ice cave", "ice hut", "ice pyramid", "ice ruins", "ice statue"]
     b3.tree_images = ["frozen tree"]
     b3.rock_images = ["sheer outcropping", "icy rock", "ice crystal"]
-    b3.ground_images = ["snow", "ice", "iceberg"]
-    b3.water_images = ["cold water"]
-    b3.wall_images = ["ice wall"]
+    b3.ground_images = ["snow", "ice", "ice floe"]
+    b3.water_images = ["cold water", "still water"]
+    b3.wall_images = ["ice wall", "crystalline wall"]
     gen_data.biomes.append(b3)
 
     return gen_data
