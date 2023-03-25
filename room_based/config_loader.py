@@ -39,34 +39,33 @@ def deserialize_biome(biome_data):
 class CacheFiller:
     def __init__(self):
         self.names = []
-
-    def cache_image_and_text(self, biome: Biome, image):
-        self.names.append(biome.format_name(image))
+        self.background_tile_names = []  # Generated visually different
 
     def cache_image_and_text_for_config(self, config):
         for biome in config.biomes:
             for image in biome.tree_images:
-                self.cache_image_and_text(biome, image)
+                self.names.append(biome.format_name(image))
             for image in biome.rock_images:
-                self.cache_image_and_text(biome, image)
+                self.names.append(biome.format_name(image))
             for image in biome.ground_images:
-                self.cache_image_and_text(biome, image)
+                self.background_tile_names.append(biome.format_name(image))
             for image in biome.water_images:
-                self.cache_image_and_text(biome, image)
+                self.background_tile_names.append(biome.format_name(image))
             for image in biome.wall_images:
-                self.cache_image_and_text(biome, image)
+                self.background_tile_names.append(biome.format_name(image))
             for ch in biome.monster_types:
-                self.cache_image_and_text(biome, ch)
+                self.names.append(biome.format_name(ch))
             for it in biome.object_types:
-                self.cache_image_and_text(biome, it)
+                self.names.append(biome.format_name(it))
         self.preload_descriptions()
         self.preload_images()
 
     def preload_descriptions(self):
-        generate_descriptions(self.names, "../gpt/" + DEFAULT_CACHE_FILE_NAME)
+        generate_descriptions(self.names + self.background_tile_names, "../gpt/" + DEFAULT_CACHE_FILE_NAME)
 
     def preload_images(self):
         preload_images(self.names)
+        preload_images(self.background_tile_names, convert_alpha=False, force_reload=False, prompt_str="Tiling top down view of {thing}. Video game background. Pixel art 8 bit. Concept art style")
 
 
 def get_map_gen_config():
@@ -83,8 +82,8 @@ def get_map_gen_config():
                        "tree house", "well", "fountain", "statue", "grave"]
     b1.tree_images = ["gnarled tree", "acorn tree", "yew tree", "fruit tree", "oak tree", "beech tree"]
     b1.rock_images = ["boulder", "rock", "stone"]
-    b1.ground_images = ["grass", "dirt", "fallen leaves", "moss"]
-    b1.water_images = ["still water", "stagnant water", "swamp water"]
+    b1.ground_images = ["grass"] #  , "dirt", "fallen leaves", "moss"]
+    b1.water_images = ["still water"] #  , "stagnant water", "swamp water"]
     b1.wall_images = ["wooden wall"]
     gen_data.biomes.append(b1)
 
@@ -97,7 +96,7 @@ def get_map_gen_config():
     b2.object_types = ["pillar", "pyramid", "canyon", "ruins", "cave entrance", "ancient statue", "oasis"]
     b2.tree_images = ["cactus"]
     b2.rock_images = ["boulder", "rock", "crystal"]
-    b2.ground_images = ["sand", "dirt", "piles of sand"]
+    b2.ground_images = ["sand"] #  , "dirt", "piles of sand"]
     b2.water_images = ["precious water"]
     b2.wall_images = ["brick wall"]
     gen_data.biomes.append(b2)
@@ -111,7 +110,7 @@ def get_map_gen_config():
     b3.object_types = ["ice pillar", "ice cave", "ice hut", "ice pyramid", "ice ruins", "ice statue"]
     b3.tree_images = ["frozen tree"]
     b3.rock_images = ["sheer outcropping", "icy rock", "ice crystal"]
-    b3.ground_images = ["snow", "ice", "iceberg"]
+    b3.ground_images = ["snow"] #  , "ice", "iceberg"]
     b3.water_images = ["cold water"]
     b3.wall_images = ["ice wall"]
     gen_data.biomes.append(b3)

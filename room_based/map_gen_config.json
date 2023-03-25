@@ -42,15 +42,14 @@
                 "stone"
             ],
             "ground_images": [
-                "grass",
-                "dirt",
-                "fallen leaves",
-                "moss"
+                [
+                    "grass"
+                ]
             ],
             "water_images": [
-                "still water",
-                "stagnant water",
-                "swamp water"
+                [
+                    "still water"
+                ]
             ],
             "wall_images": [
                 "wooden wall"
@@ -86,9 +85,9 @@
                 "crystal"
             ],
             "ground_images": [
-                "sand",
-                "dirt",
-                "piles of sand"
+                [
+                    "sand"
+                ]
             ],
             "water_images": [
                 "precious water"
@@ -125,9 +124,9 @@
                 "ice crystal"
             ],
             "ground_images": [
-                "snow",
-                "ice",
-                "iceberg"
+                [
+                    "snow"
+                ]
             ],
             "water_images": [
                 "cold water"

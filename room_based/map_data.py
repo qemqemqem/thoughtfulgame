@@ -20,7 +20,7 @@ ROCK = TileType("rock", False)
 
 
 class Tile:
-    def __init__(self, tile_type, asset_name = None):
+    def __init__(self, tile_type, asset_name=None):
         self.type = tile_type
         self.asset_name = asset_name
 
@@ -69,7 +69,8 @@ class Biome:
         self.rock_density: float = 0.05
 
     def format_name(self, image_name):
-        return "A " + image_name + " in the " + self.name
+        return image_name
+        # return "A " + image_name + " in the " + self.name
 
 
 class MapGenConfig:
