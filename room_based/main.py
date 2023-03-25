@@ -15,11 +15,14 @@ width = 30
 height = 20
 tile_size = 32
 
+# Visual
+extra_space_on_right = 300
+
 # Initialize pygame first because it's used to load images
 pygame.init()
 writer = PygameWriter(lines_of_text=14)
-screen = pygame.display.set_mode((width * tile_size, height * tile_size + writer.text_space))
-pygame.display.set_caption("Tile Map Renderer")
+screen = pygame.display.set_mode((width * tile_size + extra_space_on_right, height * tile_size + writer.text_space))
+pygame.display.set_caption("Thoughtful Game")
 
 # Generation
 map_gen_config = get_map_gen_config()
@@ -30,7 +33,7 @@ initialize_room_and_neighbors(room, map_data)
 player.character = room.characters[0]  # The first character is the player character
 player.character.player_character = True
 generate_thoughts(player.character, room)
-renderer = TileMapRenderer(writer, tile_size=tile_size)
+renderer = TileMapRenderer(writer, tile_size=tile_size, extra_space_on_right=extra_space_on_right)
 game = Game(map_data, room)
 
 main_game_loop(game, screen, renderer)
