@@ -20,8 +20,12 @@ class TileMapGenerator:
         self.tree_scale: int = 50
 
     def generate_map(self, room: Room, water_level=0.1, wall_density=0.05):
+        ground_type = room.biome.format_name(random.choice(room.biome.ground_images))
+        water_type = room.biome.format_name(random.choice(room.biome.water_images))
+        wall_type = room.biome.format_name(random.choice(room.biome.wall_images))
+
         # Initialize the map with grass tiles
-        tile_map = [[Tile(GROUND, room.biome.format_name(random.choice(room.biome.ground_images))) for _ in range(self.width)] for _ in range(self.height)]
+        tile_map = [[Tile(GROUND, ground_type) for _ in range(self.width)] for _ in range(self.height)]
 
         # Generate the Perlin noise map for water placement
         water_map = [[snoise2((self.room.room_pos.x*self.room.width+x) / self.water_scale, (-self.room.room_pos.y*self.room.height+y) / self.water_scale, octaves=4, persistence=0.5, lacunarity=2, base=1089234) for x in range(self.width)] for y in range(self.height)]
@@ -30,13 +34,13 @@ class TileMapGenerator:
         for y in range(self.height):
             for x in range(self.width):
                 if water_map[y][x] < water_level:
-                    tile_map[y][x] = Tile(WATER, room.biome.format_name(random.choice(self.room.biome.water_images)))
+                    tile_map[y][x] = Tile(WATER, water_type)
 
         # Place walls randomly
         for y in range(self.height):
             for x in range(self.width):
                 if tile_map[y][x].type == GROUND and random.random() < wall_density:
-                    tile_map[y][x] = Tile(WALL, room.biome.format_name(random.choice(self.room.biome.wall_images)))
+                    tile_map[y][x] = Tile(WALL, wall_type)
 
         return tile_map
 

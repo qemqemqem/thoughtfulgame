@@ -86,8 +86,8 @@ def get_map_gen_config():
                        "magic wand", "gilded sword", "rusty key", "fairy dust", "glowing potion", "strange compass"]
     b1.tree_images = ["gnarled tree", "acorn tree", "yew tree", "fruit tree", "oak tree", "beech tree"]
     b1.rock_images = ["boulder", "rock", "stone"]
-    b1.ground_images = ["grass"] #  , "dirt", "fallen leaves", "moss"]
-    b1.water_images = ["still water"] #  , "stagnant water", "swamp water"]
+    b1.ground_images = ["grass", "dirt", "fallen leaves", "moss"]
+    b1.water_images = ["still water", "stagnant water", "swamp water"]
     b1.wall_images = ["wooden wall"]
     gen_data.biomes.append(b1)
 
@@ -100,7 +100,7 @@ def get_map_gen_config():
     b2.object_types = ["pillar", "pyramid", "canyon", "ruins", "cave entrance", "ancient statue", "oasis"]
     b2.tree_images = ["cactus"]
     b2.rock_images = ["boulder", "rock", "crystal"]
-    b2.ground_images = ["sand"] #  , "dirt", "piles of sand"]
+    b2.ground_images = ["sand", "dirt", "piles of sand"]
     b2.water_images = ["precious water"]
     b2.wall_images = ["brick wall"]
     gen_data.biomes.append(b2)
@@ -114,7 +114,7 @@ def get_map_gen_config():
     b3.object_types = ["ice pillar", "ice cave", "ice hut", "ice pyramid", "ice ruins", "ice statue"]
     b3.tree_images = ["frozen tree"]
     b3.rock_images = ["sheer outcropping", "icy rock", "ice crystal"]
-    b3.ground_images = ["snow"] #  , "ice", "iceberg"]
+    b3.ground_images = ["snow", "ice", "iceberg"]
     b3.water_images = ["cold water"]
     b3.wall_images = ["ice wall"]
     gen_data.biomes.append(b3)
