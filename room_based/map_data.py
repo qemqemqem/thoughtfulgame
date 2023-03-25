@@ -2,7 +2,7 @@
 import random
 import json
 
-from room_based.thought_data import ThoughtBrain
+from room_based.thought_data import *
 from utils.vec2i import Vec2i
 
 
@@ -43,6 +43,9 @@ class Character:
         self.description: str = ""
         self.thought_brain: ThoughtBrain = ThoughtBrain()
 
+    def __str__(self):
+        return self.type
+
 
 class InanimateObject:
     def __init__(self, object_type, x, y, room, interesting=False):
@@ -52,6 +55,9 @@ class InanimateObject:
         self.room = room
         self.description = ""
         self.interesting = interesting
+
+    def __str__(self):
+        return self.type
 
 
 class Biome:
