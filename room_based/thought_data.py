@@ -16,7 +16,7 @@ class Thought:
 
     def __str__(self):
         if self.topic is not None:
-            return f"[{self.topic.mood} about {self.topic.target}]: {self.text}"
+            return f"[{self.topic.mood.capitalize()} about {self.topic.target}]: {self.text}"
         else:
             return self.text
 

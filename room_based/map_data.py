@@ -44,7 +44,7 @@ class Character:
         self.thought_brain: ThoughtBrain = ThoughtBrain()
 
     def __str__(self):
-        return self.type
+        return self.type.capitalize()
 
 
 class InanimateObject:
@@ -57,7 +57,7 @@ class InanimateObject:
         self.interesting = interesting
 
     def __str__(self):
-        return self.type
+        return self.type.capitalize()
 
 
 class Biome:

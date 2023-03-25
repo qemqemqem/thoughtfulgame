@@ -61,7 +61,11 @@ def prompt_completion_chat(question, model="gpt-3.5-turbo", n=1, temperature=0.0
     )
     answers = []
     for i in range(n):
-        answers.append(response.choices[i].message.content.strip())
+        ans = response.choices[i].message.content.strip()
+        # Sometimes it quotes the response, so strip those off
+        if ans[0] == "\"" and ans[-1] == "\"":
+            ans = ans[1:-1]
+        answers.append(ans)
     # print(f"\tPROMPT: {question}\n\tANSWER: {answer}\n")
     duration = time.perf_counter() - start_time
     print(f"Duration: {duration:.2f} seconds: {answers[0][:20]}")
