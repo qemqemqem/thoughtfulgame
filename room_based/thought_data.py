@@ -1,5 +1,7 @@
 from pygame import time
 
+from audio.speech_synthesis import speak
+
 
 class ThoughtTopic:
     # Target could be a Character or a Thing
@@ -16,7 +18,7 @@ class Thought:
         self.perceptions: list[str] = perceptions
         self.topic: ThoughtTopic = topic
         self.time_start_countdown: int = time_start
-        self.appear_duration: int = 10_000  # ms
+        self.appear_duration: int = 15_000  # ms
         self.empty = empty  # True if it's just a placeholder thought
         self.being_replaced = False  # True if another thought has been ordered to replace this one
 
@@ -56,6 +58,9 @@ class ThoughtBrain:
             if self.current_thought_options[i] == thought:
                 self.current_thought_options[i] = Thought(f"Loading thought {i+1}...", empty=True)
                 break
+
+        # Audio
+        speak(thought.text)
 
     def add_thought_option(self, thought: Thought):
         thought.time_start_countdown = time.get_ticks()
