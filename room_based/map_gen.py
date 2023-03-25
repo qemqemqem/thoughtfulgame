@@ -19,14 +19,12 @@ class TileMapGenerator:
         self.water_scale: int = 100
         self.tree_scale: int = 50
 
-    def generate_map(self, room: Room, water_level=0.1, tree_density=0.9, wall_density=0.05, rock_density=0.1, forest_level=.4):
+    def generate_map(self, room: Room, water_level=0.1, wall_density=0.05):
         # Initialize the map with grass tiles
-        tile_map = [[Tile(GRASS, room.biome.format_name(random.choice(room.biome.ground_images))) for _ in range(self.width)] for _ in range(self.height)]
+        tile_map = [[Tile(GROUND, room.biome.format_name(random.choice(room.biome.ground_images))) for _ in range(self.width)] for _ in range(self.height)]
 
         # Generate the Perlin noise map for water placement
         water_map = [[snoise2((self.room.room_pos.x*self.room.width+x) / self.water_scale, (-self.room.room_pos.y*self.room.height+y) / self.water_scale, octaves=4, persistence=0.5, lacunarity=2, base=1089234) for x in range(self.width)] for y in range(self.height)]
-
-        tree_map = [[snoise2((self.room.room_pos.x*self.room.width+x-987141) / self.tree_scale, (-self.room.room_pos.y*self.room.height+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234) for x in range(self.width)] for y in range(self.height)]
 
         # Place water tiles based on the water map
         for y in range(self.height):
@@ -34,23 +32,11 @@ class TileMapGenerator:
                 if water_map[y][x] < water_level:
                     tile_map[y][x] = Tile(WATER, room.biome.format_name(random.choice(self.room.biome.water_images)))
 
-        # Place trees randomly
-        for y in range(self.height):
-            for x in range(self.width):
-                if tile_map[y][x].type == GRASS and abs(tree_map[y][x]) < forest_level and random.random() < tree_density:
-                    tile_map[y][x] = Tile(TREE, room.biome.format_name(random.choice(self.room.biome.tree_images)))
-
         # Place walls randomly
         for y in range(self.height):
             for x in range(self.width):
-                if tile_map[y][x].type == GRASS and random.random() < wall_density:
+                if tile_map[y][x].type == GROUND and random.random() < wall_density:
                     tile_map[y][x] = Tile(WALL, room.biome.format_name(random.choice(self.room.biome.wall_images)))
-
-        # Place rocks randomly
-        for y in range(self.height):
-            for x in range(self.width):
-                if tile_map[y][x].type == GRASS and random.random() < rock_density:
-                    tile_map[y][x] = Tile(ROCK, room.biome.format_name(random.choice(self.room.biome.rock_images)))
 
         return tile_map
 
@@ -100,6 +86,33 @@ class TileMapGenerator:
                     break
         return characters
 
+    def generate_trees_and_rocks(self, room: Room, rock_density=0.1, forest_level=.4,tree_density=0.9):
+        # Use Perlin noise to generate a map of trees
+        tree_map = [[snoise2((self.room.room_pos.x*self.room.width+x-987141) / self.tree_scale, (-self.room.room_pos.y*self.room.height+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234) for x in range(self.width)] for y in range(self.height)]
+
+        items = []
+
+        # Place trees randomly
+        for y in range(self.height):
+            for x in range(self.width):
+                if room.tile_map[y][x].type == GROUND and abs(tree_map[y][x]) < forest_level and random.random() < tree_density:
+                    tree_type = room.biome.format_name(random.choice(self.room.biome.tree_images))
+                    tree = InanimateObject(tree_type, x, y, self.room, interesting=False)
+                    tree.description = string_cache.get(tree_type)
+                    items.append(tree)
+
+        # Place rocks randomly
+        for y in range(self.height):
+            for x in range(self.width):
+                if room.tile_map[y][x].type == GROUND and random.random() < rock_density:
+                    rock_type = room.biome.format_name(random.choice(self.room.biome.rock_images))
+                    rock = InanimateObject(rock_type, x, y, self.room, interesting=False)
+                    rock.description = string_cache.get(rock_type)
+                    items.append(rock)
+
+        return items
+
+
     def generate_items(self, room, num_items=5, item_types=None):
         if item_types is None:
             item_types = [room.biome.format_name(it) for it in room.biome.object_types]
@@ -108,7 +121,7 @@ class TileMapGenerator:
             item_type = random.choice(item_types)
             x = int(random.uniform(0, self.width))
             y = int(random.uniform(0, self.height))
-            item = InanimateObject(item_type, x, y, self.room)
+            item = InanimateObject(item_type, x, y, self.room, interesting=True)
             item.description = string_cache.get(item_type)
             items.append(item)
         return items
@@ -145,10 +158,11 @@ def initialize_new_room(room: Room, map_data):
     room.initialized = True
     add_exits_to_room(room, map_data)
     map_generator = TileMapGenerator(room, seed=random.randint(0, 1000000))
-    room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level, forest_level=room.biome.tree_level, tree_density=0.9, wall_density=0.0, rock_density=room.biome.rock_density)
+    room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level,  wall_density=0.0)
     map_generator.wall_in_map(room, room.tile_map, WALL)
     room.characters = map_generator.generate_characters(room, num_characters=5)
     room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
+    room.things += map_generator.generate_trees_and_rocks(room, forest_level=room.biome.tree_level, tree_density=0.9, rock_density=room.biome.rock_density)
     t = threading.Thread(target=_room_description_helper, args=(room, map_data))
     t.start()
 

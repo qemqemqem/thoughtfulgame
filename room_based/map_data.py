@@ -12,11 +12,11 @@ class TileType:
         self.blocks_movement = blocks_movement
 
 
-GRASS = TileType("grass", False)
+GROUND = TileType("grass", False)
 WATER = TileType("water", True)
-TREE = TileType("tree", False)
+# TREE = TileType("tree", False)
 WALL = TileType("wall", True)
-ROCK = TileType("rock", False)
+# ROCK = TileType("rock", False)
 
 
 class Tile:
@@ -45,12 +45,13 @@ class Character:
 
 
 class InanimateObject:
-    def __init__(self, object_type, x, y, room):
+    def __init__(self, object_type, x, y, room, interesting=False):
         self.type = object_type
         self.x = x
         self.y = y
         self.room = room
         self.description = ""
+        self.interesting = interesting
 
 
 class Biome:
