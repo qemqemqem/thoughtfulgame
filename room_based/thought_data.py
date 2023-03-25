@@ -54,13 +54,16 @@ class ThoughtBrain:
             self.default_thought.time_start_countdown = time.get_ticks()
 
         # Replace that thought with an empty one
+        self.remove_thought_option(thought)
+
+        # Audio
+        speak(thought.text)
+
+    def remove_thought_option(self, thought: Thought):
         for i in range(len(self.current_thought_options)):
             if self.current_thought_options[i] == thought:
                 self.current_thought_options[i] = Thought(f"Loading thought {i+1}...", empty=True)
                 break
-
-        # Audio
-        speak(thought.text)
 
     def add_thought_option(self, thought: Thought):
         thought.time_start_countdown = time.get_ticks()

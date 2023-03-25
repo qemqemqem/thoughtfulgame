@@ -161,8 +161,8 @@ def initialize_new_room(room: Room, map_data):
     room.tile_map = map_generator.generate_map(room, water_level=room.biome.water_level,  wall_density=0.0)
     map_generator.wall_in_map(room, room.tile_map, WALL)
     room.characters = map_generator.generate_characters(room, num_characters=5)
-    room.things = map_generator.generate_items(room, num_items=random.randint(2, 6))
-    room.things += map_generator.generate_trees_and_rocks(room, forest_level=room.biome.tree_level, tree_density=0.9, rock_density=room.biome.rock_density)
+    room.things = map_generator.generate_trees_and_rocks(room, forest_level=room.biome.tree_level, tree_density=0.9, rock_density=room.biome.rock_density)
+    room.things += map_generator.generate_items(room, num_items=random.randint(2, 6))
     t = threading.Thread(target=_room_description_helper, args=(room, map_data))
     t.start()
 

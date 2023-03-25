@@ -12,7 +12,17 @@
                 "wolf",
                 "elf",
                 "velociraptor",
-                "centipede"
+                "centipede",
+                "unicorn",
+                "troll",
+                "phoenix",
+                "centaur",
+                "griffin",
+                "basilisk",
+                "dryad",
+                "chimera",
+                "satyr",
+                "harpy"
             ],
             "object_types": [
                 "gemstones",
@@ -26,7 +36,17 @@
                 "well",
                 "fountain",
                 "statue",
-                "grave"
+                "grave",
+                "Crystal ball",
+                "ancient tome",
+                "Enchanted amulet",
+                "elven bow",
+                "magic wand",
+                "gilded sword",
+                "rusty key",
+                "fairy dust",
+                "glowing potion",
+                "strange compass"
             ],
             "tree_images": [
                 "gnarled tree",
@@ -96,6 +116,7 @@
         {
             "name": "Arctic",
             "monster_types": [
+                "sea dragon",
                 "polar bear",
                 "ice monster",
                 "seal",

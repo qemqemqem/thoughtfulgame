@@ -80,9 +80,10 @@ def get_map_gen_config():
     b1.water_level = -0.4
     b1.rock_density = 0.05
     b1.monster_types = ["goblin", "orc", "troll", "giant spider", "giant rat", "bat", "wolf", "elf", "velociraptor",
-                        "centipede"]
+                        "centipede", "unicorn", "troll", "phoenix", "centaur", "griffin", "basilisk", "dryad", "chimera", "satyr", "harpy"]
     b1.object_types = ["gemstones", "hut", "eyestalk", "great pyramid", "crypt entrance", "cave entrance", "bird house",
-                       "tree house", "well", "fountain", "statue", "grave"]
+                       "tree house", "well", "fountain", "statue", "grave", "Crystal ball", "ancient tome", "Enchanted amulet", "elven bow",
+                       "magic wand", "gilded sword", "rusty key", "fairy dust", "glowing potion", "strange compass"]
     b1.tree_images = ["gnarled tree", "acorn tree", "yew tree", "fruit tree", "oak tree", "beech tree"]
     b1.rock_images = ["boulder", "rock", "stone"]
     b1.ground_images = ["grass"] #  , "dirt", "fallen leaves", "moss"]

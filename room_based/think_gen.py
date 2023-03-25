@@ -30,7 +30,7 @@ def generate_specific_thoughts(character: Character, room: Room, num_thoughts=3)
     possible_moods = ["happy", "sad", "angry", "confused", "surprised", "disgusted", "scared"]
     dedup = []
     for thing in room.things:
-        if thing.type not in dedup:
+        if thing.type not in dedup and thing.interesting:
             dedup.append(thing.type)
             thought_topics.append(ThoughtTopic(random.choice(possible_moods), thing))
     for ch in room.characters:
@@ -64,11 +64,14 @@ def generate_thoughts(character: Character, room: Room):
 
 def update_thought_timers(character: Character, game):
     # See if any thoughts get thunk
-    def_thought = character.thought_brain.default_thought
-    if def_thought is not None and def_thought.time_start_countdown is not None and not def_thought.empty:
-        age = time.get_ticks() - def_thought.time_start_countdown
-        if age > def_thought.appear_duration:
-            character.thought_brain.think_thought(def_thought)
+    for thought in character.thought_brain.current_thought_options:
+        if thought.time_start_countdown is not None and not thought.empty:
+            age = time.get_ticks() - thought.time_start_countdown
+            if age > thought.appear_duration:
+                if thought == character.thought_brain.default_thought:
+                    character.thought_brain.think_thought(thought)
+                else:
+                    character.thought_brain.remove_thought_option(thought)
 
     # If the player pressed a number key, then think that thought
     # Check if the player pressed the number 1 key, using pygame:
