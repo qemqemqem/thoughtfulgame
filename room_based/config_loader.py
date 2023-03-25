@@ -122,6 +122,12 @@ def get_map_gen_config():
     return gen_data
 
 
+# This will do nothing if everything is already loaded. But if anything is missing, it will call out to ChatGPT and DALL-E to generate text and images, respectively.
+def create_cache_files_for_config(config):
+    filler = CacheFiller()
+    filler.cache_image_and_text_for_config(config)
+
+
 if __name__ == "__main__":
     # Testing
     # preload_images(["swirling water"], convert_alpha=False, force_reload=True,
@@ -130,12 +136,11 @@ if __name__ == "__main__":
 
     gen_data = get_map_gen_config()
 
-    # Save to file
-    save_mapgenconfig(gen_data, "map_gen_config.json")
-
-    # Load from file
-    gen_data = load_mapgenconfig("map_gen_config.json")
+    # # Save to file
+    # save_mapgenconfig(gen_data, "map_gen_config.json")
+    #
+    # # Load from file
+    # gen_data = load_mapgenconfig("map_gen_config.json")
 
     # Cache filler
-    filler = CacheFiller()
-    filler.cache_image_and_text_for_config(gen_data)
+    create_cache_files_for_config(gen_data)
