@@ -45,7 +45,8 @@ def replace_white_with_transparency(image_surface):
     return image_surface.convert_alpha()
 
 
-def replace_mostly_white_with_transparency(image_surface, threshold=247):
+# This function does two things at once because it's faster to do them together
+def postprocess_image(image_surface, threshold=247, desaturation=0.0, lighten=0.0):
     if not pygame.get_init():
         pygame.display.set_mode((1, 1))  # set a temporary video mode
     new_surface = pygame.Surface(image_surface.get_size(), pygame.SRCALPHA)
@@ -55,31 +56,49 @@ def replace_mostly_white_with_transparency(image_surface, threshold=247):
         for y in range(image_surface.get_height()):
             color = pixels[x, y]
             a = (color >> 24) & 0xFF
-            g = (color >> 16) & 0xFF
-            b = (color >> 8) & 0xFF
-            r = color & 0xFF
+            r = (color >> 16) & 0xFF
+            g = (color >> 8) & 0xFF
+            b = color & 0xFF
+            # Convert white to transparency before messing with it
             if r > threshold and g > threshold and b > threshold:
                 pixels[x, y] = pygame.Color(0, 0, 0, 0)  # set pixel to transparent black
+                continue
+            if desaturation > 0.0:
+                # Desaturate the color
+                avg = (r + g + b) / 3
+                r = int(r * (1 - desaturation) + avg * desaturation)
+                g = int(g * (1 - desaturation) + avg * desaturation)
+                b = int(b * (1 - desaturation) + avg * desaturation)
+            if lighten > 0.0:
+                # Lighten the color
+                r = int(r * (1 - lighten) + 255 * lighten)
+                g = int(g * (1 - lighten) + 255 * lighten)
+                b = int(b * (1 - lighten) + 255 * lighten)
+            if lighten < 0.0:
+                # Darken the color
+                r = int(r * (1 + lighten))
+                g = int(g * (1 + lighten))
+                b = int(b * (1 + lighten))
+            if lighten > 0.0 or desaturation > 0.0:
+                pixels[x, y] = pygame.Color(r, g, b, a)
     del pixels  # delete PixelArray to release lock on the surface
     return new_surface
 
 
-
-
-def save_image_bytes_with_transparency(image_bytes, filename, convert_alpha=True):
+def save_image_bytes_with_transparency(image_bytes, filename, convert_alpha=True, desaturation=0.0, lighten=0.0):
     # Load the bytes into a Pygame surface
     image_io = BytesIO(image_bytes)
     image_surface = pygame.image.load(image_io)
 
     # Replace white with transparency
-    if convert_alpha:
-        image_surface = replace_mostly_white_with_transparency(image_surface)
+    if convert_alpha or desaturation > 0 or lighten > 0:
+        image_surface = postprocess_image(image_surface, desaturation=desaturation, lighten=lighten, threshold=247 if convert_alpha else 256)
 
     # Save the image with transparency to a file
     pygame.image.save(image_surface, filename)
 
 
-def generate_and_save_images(prompt_list, convert_alpha=True, force_reload=False, desaturation=0.0, prompt_str=""):
+def generate_and_save_images(prompt_list, convert_alpha=True, force_reload=False, desaturation=0.0, lighten=0.0, prompt_str=""):
     # Filter out prompts which are already saved as files
     if not force_reload:
         prompt_list = [prompt for prompt in prompt_list if not os.path.exists(f"../images/generated/{prompt}.png")]
@@ -88,13 +107,13 @@ def generate_and_save_images(prompt_list, convert_alpha=True, force_reload=False
 
     # Save images to disk
     for prompt, image_bytes in output_dict.items():
-        save_image_bytes_with_transparency(image_bytes, f"../images/generated/{prompt}.png", convert_alpha=convert_alpha)
+        save_image_bytes_with_transparency(image_bytes, f"../images/generated/{prompt}.png", convert_alpha=convert_alpha, desaturation=desaturation, lighten=lighten)
         print("Saving image: ", prompt, "to file", f"../images/generated/{prompt}.png")
         # with open(f"../images/generated/{prompt}.png", "wb") as f:
         #     f.write(image_bytes)
 
 
-def preload_images(things, force_reload=False, desaturation=0.0, prompt_str="", convert_alpha=True):
+def preload_images(things, force_reload=False, desaturation=0.0, prompt_str="", convert_alpha=True, lighten=0.0):
     # Don't waste time generating images for things which already exist
     if not force_reload:
         things = [th for th in things if not os.path.exists(f"../images/generated/{th}.png")]
@@ -103,7 +122,8 @@ def preload_images(things, force_reload=False, desaturation=0.0, prompt_str="", 
     chunk_size = 49
     chunks = [things[i:i + chunk_size] for i in range(0, len(things), chunk_size)]
     for chunk in chunks:
-        generate_and_save_images(chunk, convert_alpha=convert_alpha, force_reload=force_reload, desaturation=desaturation, prompt_str=prompt_str)
+        generate_and_save_images(chunk, convert_alpha=convert_alpha, force_reload=force_reload, desaturation=desaturation, lighten
+        =lighten, prompt_str=prompt_str)
         # Sleep for 1 minute
         if chunk != chunks[-1]:
             time.sleep(60)

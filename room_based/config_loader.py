@@ -39,14 +39,16 @@ def deserialize_biome(biome_data):
 class CacheFiller:
     def __init__(self):
         self.names = []
-        self.background_tile_names = []  # Generated visually different
+        # Generated these visually differently
+        self.background_tile_names = []
+        self.doodad_names = []
 
     def cache_image_and_text_for_config(self, config):
         for biome in config.biomes:
             for image in biome.tree_images:
-                self.names.append(biome.format_name(image))
+                self.doodad_names.append(biome.format_name(image))
             for image in biome.rock_images:
-                self.names.append(biome.format_name(image))
+                self.doodad_names.append(biome.format_name(image))
             for image in biome.ground_images:
                 self.background_tile_names.append(biome.format_name(image))
             for image in biome.water_images:
@@ -65,7 +67,8 @@ class CacheFiller:
 
     def preload_images(self):
         preload_images(self.names)
-        preload_images(self.background_tile_names, convert_alpha=False, force_reload=False, prompt_str="Tiling top down view of {thing}. Video game background. Pixel art 8 bit. Concept art style")
+        preload_images(self.doodad_names, convert_alpha=True, force_reload=False, desaturation=0.7, lighten=-0.3)
+        preload_images(self.background_tile_names, convert_alpha=False, force_reload=False, prompt_str="Tiling top down view of {thing}. Video game background. Pixel art 8 bit. Concept art style", desaturation=0.7, lighten=-0.3)
 
 
 def get_map_gen_config():
@@ -119,6 +122,11 @@ def get_map_gen_config():
 
 
 if __name__ == "__main__":
+    # Testing
+    # preload_images(["swirling water"], convert_alpha=False, force_reload=True,
+    #                prompt_str="Tiling top down view of {thing}. Video game background. Pixel art 8 bit. Concept art style",
+    #                desaturation=0.5)
+
     gen_data = get_map_gen_config()
 
     # Save to file
