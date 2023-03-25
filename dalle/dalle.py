@@ -92,7 +92,7 @@ def save_image_bytes_with_transparency(image_bytes, filename, convert_alpha=True
 
     # Replace white with transparency
     if convert_alpha or desaturation > 0 or lighten > 0:
-        image_surface = postprocess_image(image_surface, desaturation=desaturation, lighten=lighten, threshold=247 if convert_alpha else 256)
+        image_surface = postprocess_image(image_surface, desaturation=desaturation, lighten=lighten, threshold=250 if convert_alpha else 256)
 
     # Save the image with transparency to a file
     pygame.image.save(image_surface, filename)
