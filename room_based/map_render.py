@@ -1,5 +1,6 @@
 import os
 import pygame
+from pygame import time
 
 from room_based.game_logic import Game
 from room_based.map_data import Room
@@ -16,6 +17,7 @@ class TileMapRenderer:
         self.images = {}
         self.portraits = {}
         self.extra_space_on_right = extra_space_on_right
+        self.thought_timer_space = 50
 
         # Load tile images from the 'images' folder
         for filename in os.listdir(IMAGES_FOLDER):
@@ -79,7 +81,16 @@ class TileMapRenderer:
             ]
         self.writer.write_break_long_lines(text, screen, top_left=(game.room.width * self.TILE_SIZE + self.writer.buffer_size, self.extra_space_on_right + self.writer.buffer_size))
 
-    def render_descriptions(self, screen, game: Game):
+    def draw_timer(self, screen, rect, percent_left):
+        fill_width = int(rect.width * percent_left)
+
+        # Draw the filled and empty portions of the rectangle
+        fill_rect = pygame.Rect(rect.left, rect.top, fill_width, rect.height)
+        empty_rect = pygame.Rect(rect.left + fill_width, rect.top, rect.width - fill_width, rect.height)
+        pygame.draw.rect(screen, (0, 0, 0), fill_rect)
+        pygame.draw.rect(screen, (20, 200, 20), empty_rect, 0)
+
+    def render_thoughts(self, screen, game: Game):
         room: Room = game.room
         text = []
         for i in range(len(game.player.thought_brain.current_thought_options)):
@@ -93,4 +104,12 @@ class TileMapRenderer:
         #     text.append(" * " + thing.type + ", " + thing.description)
         # for character in chars:
         #     text.append(" * " + character.type + ", " + character.description)
-        self.writer.write_break_long_lines(text, screen, top_left=(self.writer.buffer_size, room.height * self.TILE_SIZE + self.writer.buffer_size))
+        self.writer.write_break_long_lines(text, screen, top_left=(self.writer.buffer_size + self.thought_timer_space, room.height * self.TILE_SIZE + self.writer.buffer_size))
+
+        # Draw the timer
+        if game.player.thought_brain.default_thought is not None and game.player.thought_brain.default_thought.time_start_countdown is not None:
+            for i in range(len(game.player.thought_brain.current_thought_options)):
+                if game.player.thought_brain.default_thought == game.player.thought_brain.current_thought_options[i]:
+                    perc_done = (time.get_ticks() - game.player.thought_brain.default_thought.time_start_countdown) / game.player.thought_brain.default_thought.appear_duration
+                    rect = pygame.Rect(self.writer.buffer_size, room.height * self.TILE_SIZE + self.writer.buffer_size + i * self.writer.font_size * 2, self.thought_timer_space, self.writer.font_size)
+                    self.draw_timer(screen, rect, perc_done)

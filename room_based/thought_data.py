@@ -15,7 +15,7 @@ class Thought:
         self.text: str = text
         self.perceptions: list[str] = perceptions
         self.topic: ThoughtTopic = topic
-        self.time_start: int = time_start
+        self.time_start_countdown: int = time_start
         self.appear_duration: int = 10_000  # ms
         self.empty = empty  # True if it's just a placeholder thought
         self.being_replaced = False  # True if another thought has been ordered to replace this one
@@ -48,6 +48,9 @@ class ThoughtBrain:
         if thought == self.default_thought:
             self.default_thought = None
 
+        if self.default_thought is not None:
+            self.default_thought.time_start_countdown = time.get_ticks()
+
         # Replace that thought with an empty one
         for i in range(len(self.current_thought_options)):
             if self.current_thought_options[i] == thought:
@@ -55,7 +58,7 @@ class ThoughtBrain:
                 break
 
     def add_thought_option(self, thought: Thought):
-        thought.time_start = time.get_ticks()
+        thought.time_start_countdown = time.get_ticks()
         for i in range(len(self.current_thought_options)):
             if self.current_thought_options[i].empty:
                 self.current_thought_options[i] = thought

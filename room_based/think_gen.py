@@ -65,8 +65,8 @@ def generate_thoughts(character: Character, room: Room):
 def update_thought_timers(character: Character, game):
     # See if any thoughts get thunk
     def_thought = character.thought_brain.default_thought
-    if def_thought is not None and def_thought.time_start is not None and not def_thought.empty:
-        age = time.get_ticks() - def_thought.time_start
+    if def_thought is not None and def_thought.time_start_countdown is not None and not def_thought.empty:
+        age = time.get_ticks() - def_thought.time_start_countdown
         if age > def_thought.appear_duration:
             character.thought_brain.think_thought(def_thought)
 
@@ -88,4 +88,5 @@ def update_thought_timers(character: Character, game):
         for to in character.thought_brain.current_thought_options:
             if not to.empty:
                 character.thought_brain.default_thought = to
+                to.time_start_countdown = time.get_ticks()
                 break

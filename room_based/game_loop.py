@@ -22,7 +22,7 @@ def main_game_loop(game: Game, screen, renderer: TileMapRenderer):
         # Render the tile map and characters
         screen.fill((0, 0, 0))
         renderer.render_map(screen, game.room)
-        renderer.render_descriptions(screen, game)
+        renderer.render_thoughts(screen, game)
         pygame.display.flip()
 
         # Handle thoughts
