@@ -1,3 +1,5 @@
+from pygame import time
+
 
 class ThoughtTopic:
     # Target could be a Character or a Thing
@@ -14,7 +16,9 @@ class Thought:
         self.perceptions: list[str] = perceptions
         self.topic: ThoughtTopic = topic
         self.time_start: int = time_start
-        self.empty = empty
+        self.appear_duration: int = 10_000  # ms
+        self.empty = empty  # True if it's just a placeholder thought
+        self.being_replaced = False  # True if another thought has been ordered to replace this one
 
     def __str__(self):
         if self.topic is not None:
@@ -32,14 +36,26 @@ class ThoughtBrain:
             # thought = prompt_completion_chat(character.description, n=1, temperature=0.9)
             thought = Thought(f"Loading thought {i+1}...", empty=True)
             self.current_thought_options.append(thought)
+        self.default_thought: Thought = self.current_thought_options[0]
         self.thoughts_about: dict[object, list[Thought]] = {}
 
     def think_thought(self, thought: Thought):
         thought.perceptions.extend(self.current_perceptions)
         self.current_perceptions = []
         self.thought_history.append(thought)
+        print("Thought a thought " + str(thought))
+
+        if thought == self.default_thought:
+            self.default_thought = None
+
+        # Replace that thought with an empty one
+        for i in range(len(self.current_thought_options)):
+            if self.current_thought_options[i] == thought:
+                self.current_thought_options[i] = Thought(f"Loading thought {i+1}...", empty=True)
+                break
 
     def add_thought_option(self, thought: Thought):
+        thought.time_start = time.get_ticks()
         for i in range(len(self.current_thought_options)):
             if self.current_thought_options[i].empty:
                 self.current_thought_options[i] = thought

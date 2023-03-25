@@ -2,6 +2,7 @@ import pygame
 
 from room_based.map_render import TileMapRenderer
 from room_based.game_logic import Game
+from room_based.think_gen import update_thought_timers
 
 
 def main_game_loop(game: Game, screen, renderer: TileMapRenderer):
@@ -23,6 +24,9 @@ def main_game_loop(game: Game, screen, renderer: TileMapRenderer):
         renderer.render_map(screen, game.room)
         renderer.render_descriptions(screen, game)
         pygame.display.flip()
+
+        # Handle thoughts
+        update_thought_timers(game.player, game)
 
         # Cap the frame rate
         clock.tick(60)

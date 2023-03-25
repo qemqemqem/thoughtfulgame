@@ -1,4 +1,5 @@
 import threading
+import pygame
 
 from gpt.gpt import *
 from room_based.thought_data import *
@@ -50,11 +51,41 @@ def generate_specific_thoughts(character: Character, room: Room, num_thoughts=3)
         t.start()
 
 
-def generate_thoughts(character: Character, room: Room, num_thoughts=3):
+def generate_thoughts(character: Character, room: Room):
+    num_empty_thoughts = 0
+    for t in character.thought_brain.current_thought_options:
+        if t.empty and not t.being_replaced:
+            num_empty_thoughts += 1
+            t.being_replaced = True
     # t = threading.Thread(target=_thought_gen_helper, args=(character, room, num_thoughts))
     # t.start()
-    generate_specific_thoughts(character, room, num_thoughts)
+    generate_specific_thoughts(character, room, num_empty_thoughts)
 
-def update_thought_timers(character: Character):
-    for thought in character.thought_brain.thought_history:
-        thought.time_start += 1
+
+def update_thought_timers(character: Character, game):
+    # See if any thoughts get thunk
+    def_thought = character.thought_brain.default_thought
+    if def_thought is not None and def_thought.time_start is not None and not def_thought.empty:
+        age = time.get_ticks() - def_thought.time_start
+        if age > def_thought.appear_duration:
+            character.thought_brain.think_thought(def_thought)
+
+    # If the player pressed a number key, then think that thought
+    # Check if the player pressed the number 1 key, using pygame:
+    pressed_keys = pygame.key.get_pressed()
+    keys = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]
+    for i in range(len(keys)):
+        if pressed_keys[keys[i]]:
+            if i < len(character.thought_brain.current_thought_options):
+                if not character.thought_brain.current_thought_options[i].empty:
+                    character.thought_brain.think_thought(character.thought_brain.current_thought_options[i])
+
+    # Replace any thoughts that need it
+    generate_thoughts(character, game.room)
+
+    # Assign a default if none
+    if character.thought_brain.default_thought is None or character.thought_brain.default_thought.empty:
+        for to in character.thought_brain.current_thought_options:
+            if not to.empty:
+                character.thought_brain.default_thought = to
+                break
