@@ -6,6 +6,7 @@ class PygameWriter:
         self.lines_of_text = lines_of_text
         self.text_space = self.font_size * self.lines_of_text
         self.font = pygame.font.Font(None, self.font_size)
+        self.buffer_size = 20
 
     def write(self, text: list[str], screen, top_left: tuple[int, int] = (0, 0)):
         for i, line in enumerate(text):

@@ -50,14 +50,23 @@ class TileMapRenderer:
 
     def render_portrait(self, screen, game: Game, chars, things):
         subject = None
+        is_player = False
         if len(things) > 0:
             subject = things[0]
         elif len(chars) > 0:
             subject = chars[0]
-        if subject is not None:
-            image = self.portraits[subject.type]
-            rect = pygame.Rect(game.room.width * self.TILE_SIZE, 0, self.extra_space_on_right, self.extra_space_on_right)
-            screen.blit(image, rect)
+        if subject is None:
+            subject = game.player
+            is_player = True
+
+        # Draw the portrait
+        image = self.portraits[subject.type]
+        rect = pygame.Rect(game.room.width * self.TILE_SIZE, 0, self.extra_space_on_right, self.extra_space_on_right)
+        screen.blit(image, rect)
+
+        # Text about the thing
+        text = [subject.type.capitalize(), "", subject.description]
+        self.writer.write_break_long_lines(text, screen, top_left=(game.room.width * self.TILE_SIZE + self.writer.buffer_size, self.extra_space_on_right + self.writer.buffer_size))
 
     def render_descriptions(self, screen, game: Game):
         room: Room = game.room
