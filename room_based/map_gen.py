@@ -57,19 +57,21 @@ class TileMapGenerator:
         south_door_size = room.south_door_size
         west_door_size = room.west_door_size
 
+        wall_name = room.biome.format_name(random.choice(room.biome.wall_images))
+
         for x in range(width):
             # Add north and south walls
             if north_exit is None or (x < north_exit - north_door_size / 2 or x >= north_exit + north_door_size / 2):
-                tile_map[0][x] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
+                tile_map[0][x] = Tile(wall_type, wall_name)
             if south_exit is None or (x < south_exit - south_door_size / 2 or x >= south_exit + south_door_size / 2):
-                tile_map[height - 1][x] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
+                tile_map[height - 1][x] = Tile(wall_type, wall_name)
 
         for y in range(height):
             # Add east and west walls
             if west_exit is None or (y < west_exit - west_door_size / 2 or y >= west_exit + west_door_size / 2):
-                tile_map[y][0] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
+                tile_map[y][0] = Tile(wall_type, wall_name)
             if east_exit is None or (y < east_exit - east_door_size / 2 or y >= east_exit + east_door_size / 2):
-                tile_map[y][width - 1] = Tile(wall_type, room.biome.format_name(random.choice(room.biome.wall_images)))
+                tile_map[y][width - 1] = Tile(wall_type, wall_name)
 
     def generate_characters(self, room: Room, num_characters=5, character_types=None):
         if character_types is None:
@@ -93,6 +95,8 @@ class TileMapGenerator:
     def generate_trees_and_rocks(self, room: Room, rock_density=0.1, forest_level=.4,tree_density=0.9):
         # Use Perlin noise to generate a map of trees
         tree_map = [[snoise2((self.room.room_pos.x*self.room.width+x-987141) / self.tree_scale, (-self.room.room_pos.y*self.room.height+y+81720) / self.tree_scale, octaves=3, persistence=0.5, lacunarity=2.0, base=1089234) for x in range(self.width)] for y in range(self.height)]
+        tree_type = room.biome.format_name(random.choice(self.room.biome.tree_images))
+        rock_type = room.biome.format_name(random.choice(self.room.biome.rock_images))
 
         items = []
 
@@ -100,7 +104,6 @@ class TileMapGenerator:
         for y in range(self.height):
             for x in range(self.width):
                 if room.tile_map[y][x].type == GROUND and abs(tree_map[y][x]) < forest_level and random.random() < tree_density:
-                    tree_type = room.biome.format_name(random.choice(self.room.biome.tree_images))
                     tree = InanimateObject(tree_type, x, y, self.room, interesting=False)
                     tree.description = string_cache.get(tree_type)
                     items.append(tree)
@@ -109,7 +112,6 @@ class TileMapGenerator:
         for y in range(self.height):
             for x in range(self.width):
                 if room.tile_map[y][x].type == GROUND and random.random() < rock_density:
-                    rock_type = room.biome.format_name(random.choice(self.room.biome.rock_images))
                     rock = InanimateObject(rock_type, x, y, self.room, interesting=False)
                     rock.description = string_cache.get(rock_type)
                     items.append(rock)

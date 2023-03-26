@@ -46,12 +46,14 @@ def replace_white_with_transparency(image_surface):
 
 
 # This function does two things at once because it's faster to do them together
-def postprocess_image(image_surface, threshold=247, desaturation=0.0, lighten=0.0):
+def postprocess_image(image_surface, threshold=247, desaturation=0.0, lighten=0.0, decontrast=0.0):
     if not pygame.get_init():
         pygame.display.set_mode((1, 1))  # set a temporary video mode
     new_surface = pygame.Surface(image_surface.get_size(), pygame.SRCALPHA)
     new_surface.blit(image_surface, (0, 0))
     pixels = pygame.PixelArray(new_surface)
+    if desaturation > 0.0 and lighten != 0.0:
+        decontrast = (desaturation + abs(lighten)) / 2
     for x in range(image_surface.get_width()):
         for y in range(image_surface.get_height()):
             color = pixels[x, y]
@@ -79,6 +81,12 @@ def postprocess_image(image_surface, threshold=247, desaturation=0.0, lighten=0.
                 r = int(r * (1 + lighten))
                 g = int(g * (1 + lighten))
                 b = int(b * (1 + lighten))
+            if decontrast > 0.0:
+                # Decontrast the color
+                avg = 100
+                r = int(r * (1 - decontrast) + avg * decontrast)
+                g = int(g * (1 - decontrast) + avg * decontrast)
+                b = int(b * (1 - decontrast) + avg * decontrast)
             if lighten > 0.0 or desaturation > 0.0:
                 pixels[x, y] = pygame.Color(r, g, b, a)
     del pixels  # delete PixelArray to release lock on the surface

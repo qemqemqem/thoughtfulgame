@@ -30,7 +30,7 @@ def generate_descriptions(strings, cache_file=DEFAULT_CACHE_FILE_NAME):
             # Add the description to the cache
             cache.set(string, description)
 
-        print(f"{string}: {description}")
+            print(f"Generated: {string}: {description}")
 
     # Create a thread for each string
     for string in strings:

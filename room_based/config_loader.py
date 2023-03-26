@@ -67,7 +67,7 @@ class CacheFiller:
 
     def preload_images(self):
         preload_images(self.names)
-        preload_images(self.doodad_names, convert_alpha=True, force_reload=False, desaturation=0.7, lighten=-0.3)
+        preload_images(self.doodad_names, convert_alpha=True, force_reload=False, desaturation=0.35, lighten=-0.2)
         preload_images(self.background_tile_names, convert_alpha=False, force_reload=False, prompt_str="Tiling top down view of {thing}. Video game background. Pixel art 8 bit. Concept art style", desaturation=0.7, lighten=-0.3)
 
 
