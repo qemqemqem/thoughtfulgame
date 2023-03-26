@@ -112,6 +112,8 @@ class TileMapGenerator:
         for y in range(self.height):
             for x in range(self.width):
                 if room.tile_map[y][x].type == GROUND and random.random() < rock_density:
+                    if any(x == th.x and y == th.y for th in items):
+                        continue
                     rock = InanimateObject(rock_type, x, y, self.room, interesting=False)
                     rock.description = string_cache.get(rock_type)
                     items.append(rock)
