@@ -4,6 +4,7 @@ import threading
 import os
 import tempfile
 
+
 def _speak(text):
     # Create a gTTS object and specify the language
     tts = gTTS(text, lang='en')
@@ -21,7 +22,7 @@ def _speak(text):
     pygame.mixer.music.play()
 
     # Delete the temporary file
-    # TODO This does not work in Windows
+    # TODO This does not work in Windows because the file is still in use by pygame
     # os.remove(file_name)
 
 
@@ -29,6 +30,7 @@ def speak(text):
     # Create a thread to run the _speak function
     thread = threading.Thread(target=_speak, args=(text,))
     thread.start()
+
 
 if __name__ == '__main__':
     # Set the text to be spoken
